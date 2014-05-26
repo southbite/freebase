@@ -1,6 +1,9 @@
 var expect = require('expect.js');
-var service = require('../lib/service');
-var freebase_client = require('../lib/client');
+
+var freebase = require('../lib/index')
+
+var service = freebase.service;
+var freebase_client = freebase.client;
 var config  = require('./config');
 var faye = require('faye');
 var async = require('async');
