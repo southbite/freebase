@@ -43,10 +43,10 @@ service.initialize({size:5, //this is how many worker processes for freebase you
 Connecting to Freebase
 -------------------------
 
-<code>
- var freebase = require('freebase')
- var freebase_client = freebase.client;
- var my_client_instance;
+```javascript
+ var freebase = require('freebase'); 
+ var freebase_client = freebase.client; 
+ var my_client_instance; 
 
  	freebase_client.newClient({host:'localhost', 
 						  port:testport, 
@@ -56,68 +56,80 @@ Connecting to Freebase
 						  if (!e)
 						  	my_client_instance = client;
 
-</code>
+```
 
 PUT
 -------------------------
 
 *Puts the json in the branch e2e_test1/testsubscribe/data, creates the branch if it does not exist*
 
-`my_client_instance.put('e2e_test1/testsubscribe/data', //your branch
+```javascript
+my_client_instance.put('e2e_test1/testsubscribe/data', //your branch
 					{property1:'property1',property2:'property2',property3:'property3'}, //your data
-					function(e, result){`
+					function(e, result){
+```
 
 POST
 -------------------------
 
 *Posts your data to a collection that lives at the end of the specified branch (creates the collection if it doesnt exist), the child method will fetch your data back*
 
-`my_client_instance.post('e2e_test1/testsubscribe/data/collection', {property1:'post_property1',property2:'post_property2'}, function(e, results){
+```javascript
+my_client_instance.post('e2e_test1/testsubscribe/data/collection', {property1:'post_property1',property2:'post_property2'}, function(e, results){
 
 					if (!e){
 						//the child method returns a child in the collection with a specified id
 						my_client_instance.child('e2e_test1/testsubscribe/data/collection', results.data._id, function(e, results){
 							if (!e)
-								//you have your data back`
+								//you have your data back
+```
 
 GET
 ---------------------------
 
 *Gets the data living at the specified branch, gets the whole collection if the data is a collection, see the child method (above) for getting a specific item from a collection*
 
-`my_client_instance.get('e2e_test1/testsubscribe/data', function(e, results){
-	//results is your data`
+```javascript
+my_client_instance.get('e2e_test1/testsubscribe/data', function(e, results){
+	//results is your data
+```
 
 DELETE
 ---------------------------
 *Deletes the data living at the specified branch, if a child_id is specified, the child from the collection at the end of the branch is deleted*
 
-`my_client_instance.delete('/e2e_test1/testsubscribe/data/delete_me', null, function(e, result){
+```javascript
+	my_client_instance.delete('/e2e_test1/testsubscribe/data/delete_me', null, function(e, result){
 	if (!e)
-		//your item was deleted`
+		//your item was deleted
+```
 
 DELETE CHILD
 ----------------------------
 *Deletes a child from an array living at a branch *
 
-`//first we put
-	my_client_instance.post('/e2e_test1/testsubscribe/data/arr_delete_me', {property1:'property1',property2:'property2',property3:'property3'}, function(e, post_result){
+```javascript
+//first we put
+my_client_instance.post('/e2e_test1/testsubscribe/data/arr_delete_me', {property1:'property1',property2:'property2',property3:'property3'}, function(e, post_result){
 
 	if (!e){
 		//your item was added to a collection
 		my_client_instance.delete('/e2e_test1/testsubscribe/data/arr_delete_me',
 								   post_result.data._id, //NB - this is the child_id (you get back from the data)
-								   function(e, delete_result){ //your callback`
+								   function(e, delete_result){ //your callback
+```
 
 EVENTS
 ----------------------------
 
 *You can listen to any PUT, POST and DELETE events happeneing in your data - there us no catch-all at the moment - so you need to specifiy a path you want to listen on*
 
-`listenerclient.on('/e2e_test1/testsubscribe/data/delete_me', //the path you are listening on
+```javascript
+listenerclient.on('/e2e_test1/testsubscribe/data/delete_me', //the path you are listening on
 					  'DELETE', //either PUT,POST,DELETE
 					  1, //how many times you want your listener event handler to fire - in this case your listener function will only fire once
-					  function(e, message){ //your listener event handler`
+					  function(e, message){ //your listener event handler
+```
 
 
 
