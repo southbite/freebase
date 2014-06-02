@@ -48,7 +48,7 @@ Connecting to Freebase
  var freebase_client = freebase.client;
  var my_client_instance;
 
- freebase_client.newClient({host:'localhost', 
+ 	freebase_client.newClient({host:'localhost', 
 						  port:testport, 
 						  secret:test_secret}, function(e, client){
 
