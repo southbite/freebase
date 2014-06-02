@@ -27,7 +27,8 @@ You need to install [Mongo](http://docs.mongodb.org/manual/installation/) and ha
 Starting up Freebase
 -------------------------
 
-`var freebase = require('freebase')
+```javascript
+var freebase = require('freebase')
 var service = freebase.service;
 
 service.initialize({size:5, //this is how many worker processes for freebase you want running
@@ -38,7 +39,8 @@ service.initialize({size:5, //this is how many worker processes for freebase you
 						utils:{log_level:'info|error|warning'} //writes to console.log on all log levels
 					}}, function(e){
 						callback(e);//your server has/has-not started
-					});`
+					});
+```
 
 Connecting to Freebase
 -------------------------
