@@ -43,17 +43,20 @@ service.initialize({size:5, //this is how many worker processes for freebase you
 Connecting to Freebase
 -------------------------
 
-`var freebase = require('freebase')
-var freebase_client = freebase.client;
-var my_client_instance;
+<code>
+ var freebase = require('freebase')
+ var freebase_client = freebase.client;
+ var my_client_instance;
 
-freebase_client.newClient({host:'localhost', 
+ freebase_client.newClient({host:'localhost', 
 						  port:testport, 
 						  secret:test_secret}, function(e, client){
 
 						  //if no e, then you have been passed back a client in the client variable
 						  if (!e)
-						  	my_client_instance = client;`
+						  	my_client_instance = client;
+
+</code>
 
 PUT
 -------------------------
