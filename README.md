@@ -10,21 +10,33 @@ Firebase is fricking awesome - but sometimes priced a little out of the reach of
 
 Freebase uses faye for its pub/sub framework and mongo as its backend db, the API uses connect and is RESTful. The Redis part is to allow Faye to keep state across clustered instances of the Freebase worker process. I havent created the browser client for freebase yet - only the node client, nor are the permissions linked into pub/sub... But the event stuff and POST,PUT,GET,DELETE or all working.
 
-Freebase stores its data in a collection called 'freebase' on your mongodb. This wont be a tremendously detailed document - so please do spelunk and get involved
+Freebase stores its data in a collection called 'freebase' on your mongodb. The freebase system is actually built to be a module, this is because my idea is that you will be able to initialize a server in your own code, and possibly attach your own plugins to various system events. So the requirements and installation instructions show you how to reference freebase and write the code that starts the instance up. This wont be a tremendously detailed document - so please do spelunk and get involved.
 
 Requirements
 -------------------------
 
-You need NodeJS and NPM of course.
+You need NodeJS and NPM of course, you also need to know how node works (as my setup instructions are pretty minimal)
 
 You need to install [Redis](http://redis.io/topics/quickstart) and have it up and running, on its standard port: 6379
 
 You need to install [Mongo](http://docs.mongodb.org/manual/installation/) and have it up and running on its standard port: 27017
 
+Create a directory you want to run your freebase in, create a node application in it - with some kind of main.js and a package.json
 
-*The /test/e2e_test.js demonstrates the server and client interactions shown in the following code snippets*
+I havent had the time to join npm yet, so add the following dependancy to your package.json:
 
-Starting up Freebase
+```javascript
+"dependencies": {
+    "freebase": "git+https://github.com/southbite/freebase.git"
+  }
+```
+To get the latest freebase files run:
+npm install
+
+
+*In node_modules/freebase/test in your folder, the e2e_test.js script demonstrates the server and client interactions shown in the following code snippets*
+
+To start up a freebase, add following to your main.js:
 -------------------------
 
 ```javascript
@@ -41,6 +53,8 @@ service.initialize({size:5, //this is how many worker processes for freebase you
 						callback(e);//your server has/has-not started
 					});
 ```
+
+In your console, go to your application folder and run *node main* your server should start up and be listening on your port of choice.
 
 Connecting to Freebase
 -------------------------
