@@ -149,17 +149,17 @@ describe('e2e test', function() {
 
 			}, function(e){
 
-				console.log('ON HAS HAPPENED: ' + e);
+				//console.log('ON HAS HAPPENED: ' + e);
 
 				if (!e){
 
 					expect(listenerclient.events['/PUT@/e2e_test1/testsubscribe/data/event'].length).to.be(1);
 
-					console.log('on subscribed, about to publish');
+					//console.log('on subscribed, about to publish');
 
 					//then make the change
 					publisherclient.put('/e2e_test1/testsubscribe/data/event', {property1:'property1',property2:'property2',property3:'property3'}, function(e, result){
-						console.log('put happened - listening for result');
+						//console.log('put happened - listening for result');
 					});
 				}else
 					callback(e);
@@ -192,23 +192,23 @@ describe('e2e test', function() {
 						//we needed to have removed a single item
 						expect(message.removed).to.be(1);
 
-						console.log(message);
+						//console.log(message);
 
 						callback(e);
 
 					}, function(e){
 
-						console.log('ON HAS HAPPENED: ' + e);
+						//console.log('ON HAS HAPPENED: ' + e);
 
 						if (!e){
 
 							expect(listenerclient.events['/DELETE@/e2e_test1/testsubscribe/data/delete_me'].length).to.be(1);
 
-							console.log('subscribed, about to delete');
+							//console.log('subscribed, about to delete');
 
 							//We perform the actual delete
 							publisherclient.delete('/e2e_test1/testsubscribe/data/delete_me', null, function(e, result){
-								console.log('put happened - listening for result');
+								//console.log('put happened - listening for result');
 							});
 						}else
 							callback(e);
@@ -238,8 +238,8 @@ describe('e2e test', function() {
 						if (e)
 							return callback(e);
 
-						console.log('got array');
-						console.log(results);
+						//console.log('got array');
+						//console.log(results);
 
 						
 						expect(results.data.length).to.be(1);
@@ -249,8 +249,8 @@ describe('e2e test', function() {
 							if (e)
 							return callback(e);
 
-							console.log('delete happened');
-							console.log(delete_result);
+							//console.log('delete happened');
+							//console.log(delete_result);
 
 							publisherclient.get('/e2e_test1/testsubscribe/data/arr_delete_me', function(e, results){
 
@@ -276,7 +276,62 @@ describe('e2e test', function() {
 		}
 	});
 
+	it('should subscribe to the catch all notification', function(callback) {
 
+		var caught = {};
+
+		this.timeout(10000);
+		
+		listenerclient.onAll(function(e, message){
+
+			//console.log('IN CATCHALL');
+			//console.log(message);
+
+			if (!caught[message.action])
+				caught[message.action] = 0;
+
+			caught[message.action]++;
+			
+			if (caught['PUT'] == 1 && caught['POST'] == 1 && caught['DELETE'] == 2)
+				callback();
+
+
+		}, function(e){
+
+			if (e)
+				callback(e);
+			else {
+
+				publisherclient.put('/e2e_test1/testsubscribe/data/catch_all', {property1:'property1',property2:'property2',property3:'property3'}, function(e, put_result){
+
+					//console.log(put_result);
+
+					publisherclient.post('/e2e_test1/testsubscribe/data/catch_all_array', {property1:'property1',property2:'property2',property3:'property3'}, function(e, post_result){
+
+						//console.log(post_result);
+
+						publisherclient.delete('/e2e_test1/testsubscribe/data/catch_all', null, function(e, del_result){
+
+							//console.log(post_result);
+
+							publisherclient.delete('/e2e_test1/testsubscribe/data/catch_all_array', post_result.data._id, function(e, del_ar_result){
+
+								//console.log(del_ar_result);
+						
+							});
+					
+						});
+					
+					});
+
+				});
+
+			}
+
+
+		});
+
+	});
 	
 	
 });
