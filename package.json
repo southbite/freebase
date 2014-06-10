@@ -2,7 +2,7 @@
   "name": "freebase",
   "description": "Evented api as a service",
   "version": "0.0.1",
-  "main":"./lib/index",
+  "main": "./lib/index",
   "dependencies": {
     "faye": "~1.0.1",
     "faye-redis": "~0.2.0",
@@ -14,7 +14,8 @@
     "request": "~2.36.0",
     "connect": "~2.17.1",
     "body-parser": "~1.2.0",
-    "bcrypt": "~0.7.8"
+    "bcrypt": "~0.7.8",
+    "browserify": "~4.1.8"
   },
   "devDependencies": {
     "mocha": "~1.12.0",
