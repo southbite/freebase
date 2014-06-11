@@ -25,7 +25,7 @@ describe('e2e test', function() {
 
 		try{
 
-			service.initialize({size:5, port:testport, services:{
+			service.initialize({size:1, port:testport, services:{
 				auth:{authTokenSecret:'a256a2fd43bf441483c5177fc85fd9d3',
 				systemSecret:test_secret},
 				utils:{log_level:'info|error|warning'}
@@ -75,10 +75,32 @@ describe('e2e test', function() {
 		}
 	});
 
+	it('should get using a wildcard', function(callback) {
 
-	/*
-	We are testing setting data at a specific path
-	*/
+		publisherclient.getAll('/e2e_test1/testsubscribe/data*', null, function(e, results){
+
+			console.log(results);
+			expect(results.data.length > 0).to.be(true);
+
+			publisherclient.getAll('/e2e_test1/testsubscribe/data*', {path_only:true}, function(e, results){
+
+				expect(results.data.length > 0).to.be(true);
+
+				console.log(results);
+				callback(e);
+
+			});
+
+
+		});
+
+	});
+
+/*
+
+	//We are testing setting data at a specific path
+
+
 
 	it('the publisher should set data ', function(callback) {
 		
@@ -102,9 +124,9 @@ describe('e2e test', function() {
 		}
 	});
 
-	/*
-	We are testing pushing a specific value to a path which will actually become an array in the database
-	*/
+
+	//We are testing pushing a specific value to a path which will actually become an array in the database
+
 
 	it('the publisher should push to a collection and get a child', function(callback) {
 		
@@ -131,10 +153,9 @@ describe('e2e test', function() {
 		}
 	});
 
-	/*
-	We set the listener client to listen for a PUT event according to a path, then we set a value with the
-	publisher client.
-	*/
+
+//	We set the listener client to listen for a PUT event according to a path, then we set a value with the publisher client.
+
 	it('the listener should pick up a single published event', function(callback) {
 		
 		this.timeout(10000);
@@ -170,9 +191,9 @@ describe('e2e test', function() {
 		}
 	});
 
-	/*
-	We are testing the deletion of data at a set path, and listening for the DELETE event at that path.
-	*/
+
+//	We are testing the deletion of data at a set path, and listening for the DELETE event at that path.
+
 	it('the listener should pick up a single delete event', function(callback) {
 		
 		this.timeout(10000);
@@ -332,6 +353,8 @@ describe('e2e test', function() {
 		});
 
 	});
-	
+
+
+	*/
 	
 });
