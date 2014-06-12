@@ -75,28 +75,6 @@ describe('e2e test', function() {
 		}
 	});
 
-	it('should get using a wildcard', function(callback) {
-
-		publisherclient.getAll('/e2e_test1/testsubscribe/data*', null, function(e, results){
-
-			console.log(results);
-			expect(results.data.length > 0).to.be(true);
-
-			publisherclient.getAll('/e2e_test1/testsubscribe/data*', {path_only:true}, function(e, results){
-
-				expect(results.data.length > 0).to.be(true);
-
-				console.log(results);
-				callback(e);
-
-			});
-
-
-		});
-
-	});
-
-/*
 
 	//We are testing setting data at a specific path
 
@@ -354,7 +332,25 @@ describe('e2e test', function() {
 
 	});
 
+	it('should get using a wildcard', function(callback) {
 
-	*/
+		publisherclient.getAll('/e2e_test1/testsubscribe/data*', null, function(e, results){
+
+			console.log(results);
+			expect(results.data.length > 0).to.be(true);
+
+			publisherclient.getAll('/e2e_test1/testsubscribe/data*', {path_only:true}, function(e, results){
+
+				expect(results.data.length > 0).to.be(true);
+
+				console.log(results);
+				callback(e);
+
+			});
+
+
+		});
+
+	});
 	
 });
