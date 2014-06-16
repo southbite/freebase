@@ -8,7 +8,7 @@ Freebase is an attempt at getting the same kind of functionality that [firebase]
 
 Firebase is fricking awesome - but sometimes priced a little out of the reach of certain projects, but if you have the money to throw at it, it is well worth investigating.
 
-Freebase uses faye for its pub/sub framework and mongo as its backend db, the API uses connect and is RESTful. The Redis part is to allow Faye to keep state across clustered instances of the Freebase worker process. I havent created the browser client for freebase yet - only the node client, nor are the permissions linked into pub/sub... But the event stuff and POST,PUT,GET,DELETE or all working.
+Freebase uses faye for its pub/sub framework and mongo as its backend db, the API uses connect and is RESTful. The Redis part is to allow Faye to keep state across clustered instances of the Freebase worker process. The pub/sub stuff is working but the permissions are not linked into pub/sub(a security whole - whereby anyone can listen for POST, PUT, DELETE events without logging on) But the POST,PUT,GET,DELETE are all working and are secured using web tokens.
 
 Freebase stores its data in a collection called 'freebase' on your mongodb. The freebase system is actually built to be a module, this is because my idea is that you will be able to initialize a server in your own code, and possibly attach your own plugins to various system events. So the requirements and installation instructions show you how to reference freebase and write the code that starts the instance up. This wont be a tremendously detailed document - so please do spelunk and get involved.
 
@@ -138,13 +138,26 @@ my_client_instance.post('/e2e_test1/testsubscribe/data/arr_delete_me', {property
 EVENTS
 ----------------------------
 
-*You can listen to any PUT, POST and DELETE events happeneing in your data - there us no catch-all at the moment - so you need to specifiy a path you want to listen on*
+*You can listen to any PUT, POST and DELETE events happeneing in your data - you can specifiy a path you want to listen on or you can listen to all PUT, POST and DELETE using a catch-all listener*
 
+Specific listener:
 ```javascript
-listenerclient.on('/e2e_test1/testsubscribe/data/delete_me', //the path you are listening on
+my_client_instance.on('/e2e_test1/testsubscribe/data/delete_me', //the path you are listening on
 					  'DELETE', //either PUT,POST,DELETE
 					  1, //how many times you want your listener event handler to fire - in this case your listener function will only fire once
 					  function(e, message){ //your listener event handler
+```
+
+Catch all listener:
+```javascript
+my_client_instance.onAll(function(e, message){
+
+			//message consists of action property - POST,PUT, DELETE
+			//and data property - the actual data that got PUT, POSTED - or the _id of the data that got DELETED
+
+
+		}, function(e){
+
 ```
 
 
