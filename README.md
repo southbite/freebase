@@ -4,11 +4,11 @@ FREEBASE
 Introduction
 -------------------------
 
-Freebase is an attempt at getting the same kind of functionality that [firebase](https://www.firebase.com/) offers, but it is free. Because this is the fruit of 3 days furious coding, I would not use it in production - unless you want to fork it and do quite a lot of filling in...
+Freebase is an attempt at getting the same kind of functionality that [firebase](https://www.firebase.com/) offers, but it is free. It is not production ready - unless you want to fork it and do quite a lot of filling in...
 
 Firebase is fricking awesome - but sometimes priced a little out of the reach of certain projects, but if you have the money to throw at it, it is well worth investigating.
 
-Freebase uses faye for its pub/sub framework and mongo as its backend db, the API uses connect and is RESTful. The Redis part is to allow Faye to keep state across clustered instances of the Freebase worker process. The pub/sub stuff is working but the permissions are not linked into pub/sub(a security whole - whereby anyone can listen for POST, PUT, DELETE events without logging on) But the POST,PUT,GET,DELETE are all working and are secured using web tokens.
+Freebase uses faye for its pub/sub framework and mongo as its backend db, the API uses connect and is RESTful. The Redis part is to allow Faye to keep state across clustered instances of the Freebase worker process. The pub/sub stuff is working but the permissions are not linked into pub/sub(a security hole - whereby anyone can listen for POST, PUT, DELETE events without logging on) But the POST,PUT,GET,DELETE are all working and are secured using web tokens.
 
 Freebase stores its data in a collection called 'freebase' on your mongodb. The freebase system is actually built to be a module, this is because my idea is that you will be able to initialize a server in your own code, and possibly attach your own plugins to various system events. So the requirements and installation instructions show you how to reference freebase and write the code that starts the instance up. This wont be a tremendously detailed document - so please do spelunk and get involved.
 
@@ -44,10 +44,10 @@ var freebase = require('freebase')
 var service = freebase.service;
 
 service.initialize({size:5, //this is how many worker processes for freebase you want running
-					port:testport, //the port you want freebase to listen on
+					port:80, //the port you want freebase to listen on
 					services:{
 						auth:{authTokenSecret:'a256a2fd43bf441483c5177fc85fd9d3', //mandatory, but can be value you specify
-						systemSecret:test_secret}, //mandatory, but can be value you specify
+						systemSecret:'my test secret'}, //mandatory, but can be value you specify
 						utils:{log_level:'info|error|warning'} //writes to console.log on all log levels
 					}}, function(e){
 						callback(e);//your server has/has-not started
@@ -59,19 +59,42 @@ In your console, go to your application folder and run *node main* your server s
 Connecting to Freebase
 -------------------------
 
+Using node:
+
 ```javascript
  var freebase = require('freebase'); 
  var freebase_client = freebase.client; 
  var my_client_instance; 
 
  	freebase_client.newClient({host:'localhost', 
-						  port:testport, 
-						  secret:test_secret}, function(e, client){
+						  port:80, 
+						  secret:'my test secret'}, function(e, client){
 
 						  //if no e, then you have been passed back a client in the client variable
 						  if (!e)
 						  	my_client_instance = client;
 
+```
+
+To use the browser client, make sure the server is running, and reference the client javascript with the url pointing to the running server instances port and ip address like so:
+
+```html
+<script type="text/javascript" src="http://localhost:80/browser_client"></script>
+<script>
+//Thanks to the magic of browserify.org the browser client works exactly the same way as what the node client does, and can immediately be referenced like this:
+
+	FreebaseBrowserClient.newClient({host:'localhost', port:80, secret:'my test secret'}, function(e, instance){
+
+               if (!e){
+
+               	//instance.get...
+               	//instance.put...
+               	//instance.post...
+
+               }
+
+    });
+</script>
 ```
 
 PUT
