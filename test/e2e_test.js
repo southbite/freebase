@@ -86,10 +86,10 @@ describe('e2e test', function() {
 
 		try{
 
-			publisherclient.put('e2e_test1/testsubscribe/data', {property1:'property1',property2:'property2',property3:'property3'}, function(e, result){
+			publisherclient.set('e2e_test1/testsubscribe/data', {property1:'property1',property2:'property2',property3:'property3'}, null, function(e, result){
 			
 				if (!e){
-					publisherclient.get('e2e_test1/testsubscribe/data', function(e, results){
+					publisherclient.get('e2e_test1/testsubscribe/data', null, function(e, results){
 
 						callback(e);
 
@@ -112,11 +112,11 @@ describe('e2e test', function() {
 
 		try{
 
-				publisherclient.post('e2e_test1/testsubscribe/data/collection', {property1:'post_property1',property2:'post_property2'}, function(e, results){
+				publisherclient.setChild('e2e_test1/testsubscribe/data/collection', {property1:'post_property1',property2:'post_property2'}, function(e, results){
 
 					if (!e){
 						//the child method returns a child in the collection with a specified id
-						publisherclient.child('e2e_test1/testsubscribe/data/collection', results.data._id, function(e, results){
+						publisherclient.getChild('e2e_test1/testsubscribe/data/collection', results.data._id, function(e, results){
 							callback(e);
 						});
 
@@ -157,7 +157,7 @@ describe('e2e test', function() {
 					//console.log('on subscribed, about to publish');
 
 					//then make the change
-					publisherclient.put('/e2e_test1/testsubscribe/data/event', {property1:'property1',property2:'property2',property3:'property3'}, function(e, result){
+					publisherclient.set('/e2e_test1/testsubscribe/data/event', {property1:'property1',property2:'property2',property3:'property3'}, null, function(e, result){
 						//console.log('put happened - listening for result');
 					});
 				}else
@@ -179,7 +179,7 @@ describe('e2e test', function() {
 		try{
 
 				//We put the data we want to delete into the database
-				publisherclient.put('/e2e_test1/testsubscribe/data/delete_me', {property1:'property1',property2:'property2',property3:'property3'}, function(e, result){
+				publisherclient.set('/e2e_test1/testsubscribe/data/delete_me', {property1:'property1',property2:'property2',property3:'property3'}, null, function(e, result){
 
 					//We listen for the DELETE event
 					listenerclient.on('/e2e_test1/testsubscribe/data/delete_me', 'DELETE', 1, function(e, message){
@@ -206,7 +206,7 @@ describe('e2e test', function() {
 							//console.log('subscribed, about to delete');
 
 							//We perform the actual delete
-							publisherclient.delete('/e2e_test1/testsubscribe/data/delete_me', null, function(e, result){
+							publisherclient.remove('/e2e_test1/testsubscribe/data/delete_me', null, function(e, result){
 								//console.log('put happened - listening for result');
 							});
 						}else
@@ -227,12 +227,12 @@ describe('e2e test', function() {
 
 		try{
 
-				publisherclient.post('/e2e_test1/testsubscribe/data/arr_delete_me', {property1:'property1',property2:'property2',property3:'property3'}, function(e, post_result){
+				publisherclient.setChild('/e2e_test1/testsubscribe/data/arr_delete_me', {property1:'property1',property2:'property2',property3:'property3'}, function(e, post_result){
 
 					if (e)
 						return callback(e);
 
-					publisherclient.get('/e2e_test1/testsubscribe/data/arr_delete_me', function(e, results){
+					publisherclient.get('/e2e_test1/testsubscribe/data/arr_delete_me', null, function(e, results){
 
 						if (e)
 							return callback(e);
@@ -243,7 +243,7 @@ describe('e2e test', function() {
 						
 						expect(results.data.length).to.be(1);
 
-						publisherclient.delete('/e2e_test1/testsubscribe/data/arr_delete_me', post_result.data._id, function(e, delete_result){
+						publisherclient.removeChild('/e2e_test1/testsubscribe/data/arr_delete_me', post_result.data._id, function(e, delete_result){
 
 							if (e)
 							return callback(e);
@@ -251,7 +251,7 @@ describe('e2e test', function() {
 							//console.log('delete happened');
 							//console.log(delete_result);
 
-							publisherclient.get('/e2e_test1/testsubscribe/data/arr_delete_me', function(e, results){
+							publisherclient.get('/e2e_test1/testsubscribe/data/arr_delete_me', null, function(e, results){
 
 								if (e)
 									return callback(e);
@@ -283,15 +283,14 @@ describe('e2e test', function() {
 		
 		listenerclient.onAll(function(e, message){
 
-			//console.log('IN CATCHALL');
-			//console.log(message);
-
 			if (!caught[message.action])
 				caught[message.action] = 0;
 
+			console.log(message.action);
+
 			caught[message.action]++;
 			
-			if (caught['PUT'] == 1 && caught['POST'] == 1 && caught['DELETE'] == 2)
+			if (caught['PUT'] == 2 && caught['DELETE'] == 2)
 				callback();
 
 
@@ -301,19 +300,19 @@ describe('e2e test', function() {
 				callback(e);
 			else {
 
-				publisherclient.put('/e2e_test1/testsubscribe/data/catch_all', {property1:'property1',property2:'property2',property3:'property3'}, function(e, put_result){
+				publisherclient.set('/e2e_test1/testsubscribe/data/catch_all', {property1:'property1',property2:'property2',property3:'property3'}, null, function(e, put_result){
 
 					//console.log(put_result);
 
-					publisherclient.post('/e2e_test1/testsubscribe/data/catch_all_array', {property1:'property1',property2:'property2',property3:'property3'}, function(e, post_result){
+					publisherclient.setChild('/e2e_test1/testsubscribe/data/catch_all_array', {property1:'property1',property2:'property2',property3:'property3'}, function(e, post_result){
 
 						//console.log(post_result);
 
-						publisherclient.delete('/e2e_test1/testsubscribe/data/catch_all', null, function(e, del_result){
+						publisherclient.remove('/e2e_test1/testsubscribe/data/catch_all', null, function(e, del_result){
 
-							//console.log(post_result);
+							//console.log(del_result);
 
-							publisherclient.delete('/e2e_test1/testsubscribe/data/catch_all_array', post_result.data._id, function(e, del_ar_result){
+							publisherclient.removeChild('/e2e_test1/testsubscribe/data/catch_all_array', post_result.data._id, function(e, del_ar_result){
 
 								//console.log(del_ar_result);
 						
@@ -327,23 +326,20 @@ describe('e2e test', function() {
 
 			}
 
-
 		});
 
 	});
 
 	it('should get using a wildcard', function(callback) {
 
-		publisherclient.getAll('/e2e_test1/testsubscribe/data*', null, function(e, results){
+		publisherclient.get('/e2e_test1/testsubscribe/data*', null, function(e, results){
 
-			console.log(results);
 			expect(results.data.length > 0).to.be(true);
 
-			publisherclient.getAll('/e2e_test1/testsubscribe/data*', {path_only:true}, function(e, results){
+			publisherclient.getPaths('/e2e_test1/testsubscribe/data*', function(e, results){
 
 				expect(results.data.length > 0).to.be(true);
 
-				console.log(results);
 				callback(e);
 
 			});
