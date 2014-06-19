@@ -184,6 +184,9 @@ describe('e2e test', function() {
 					//We listen for the DELETE event
 					listenerclient.on('/e2e_test1/testsubscribe/data/delete_me', 'DELETE', 1, function(e, message){
 
+						console.log('delete message');
+						console.log(message);
+
 						//we are looking at the event internals on the listener to ensure our event management is working - because we are only listening for 1
 						//instance of this event - the event listener should have been removed 
 						expect(listenerclient.events['/DELETE@/e2e_test1/testsubscribe/data/delete_me'].length).to.be(0);
