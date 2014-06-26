@@ -177,7 +177,7 @@ Catch all listener:
 my_client_instance.onAll(function(e, message){
 
 			//message consists of action property - POST,PUT, DELETE
-			//and data property - the actual data that got PUT, POSTED - or the _id of the data that got DELETED
+			//and payload property - the actual data that got PUT, POSTED - or the _id of the data that got DELETED
 
 
 		}, function(e){
