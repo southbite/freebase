@@ -87,6 +87,8 @@ describe('e2e test', function() {
 			if (!caught[message.action])
 				caught[message.action] = 0;
 
+			console.log('ONALL ' + message);
+
 			console.log(message);
 
 			caught[message.action]++;
