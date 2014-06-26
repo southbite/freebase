@@ -94,7 +94,8 @@ describe('e2e test', function() {
 						callback(e);
 
 					});
-				}
+				}else
+					callback(e);
 			});
 
 		}catch(e){
@@ -170,6 +171,7 @@ describe('e2e test', function() {
 	});
 
 
+
 //	We are testing the deletion of data at a set path, and listening for the DELETE event at that path.
 
 	it('the listener should pick up a single delete event', function(callback) {
@@ -224,6 +226,8 @@ describe('e2e test', function() {
 		}
 	});
 
+
+
 	it('should delete a child from an array', function(callback) {
 		
 		this.timeout(10000);
@@ -231,6 +235,9 @@ describe('e2e test', function() {
 		try{
 
 				publisherclient.setChild('/e2e_test1/testsubscribe/data/arr_delete_me', {property1:'property1',property2:'property2',property3:'property3'}, function(e, post_result){
+
+					console.log('post_result');
+					console.log(post_result);
 
 					if (e)
 						return callback(e);
@@ -240,10 +247,9 @@ describe('e2e test', function() {
 						if (e)
 							return callback(e);
 
-						//console.log('got array');
-						//console.log(results);
+						console.log('got array');
+						console.log(results);
 
-						
 						expect(results.data.length).to.be(1);
 
 						publisherclient.removeChild('/e2e_test1/testsubscribe/data/arr_delete_me', post_result.data._id, function(e, delete_result){
@@ -255,6 +261,9 @@ describe('e2e test', function() {
 							//console.log(delete_result);
 
 							publisherclient.get('/e2e_test1/testsubscribe/data/arr_delete_me', null, function(e, results){
+
+								console.log('get after delete happened');
+								console.log(results);
 
 								if (e)
 									return callback(e);
@@ -351,5 +360,107 @@ describe('e2e test', function() {
 		});
 
 	});
-	
+
+	it('should search for a complex object', function(callback) {
+
+		console.log('DOING COMPLEX SEARCH');
+
+		var complex_obj = {
+			regions:['North','South','East','West'],
+			towns:['North.Cape Town', 'South.East London'],
+			categories:['Action','History'],
+			subcategories:['Action.angling','History.art'],
+			keywords:['bass','Penny Siopis'],
+			field1:'field1'
+		};
+
+		var parameters1 = {
+			criteria:{
+				$or: [ {"data.regions": { $all: ["North", "East" ] }}, 
+					   {"data.towns": { $all: ["North.Cape Town" ] }}, 
+					   {"data.categories": { $all: ["Action","History" ] }}],
+				"data.keywords": {$all: ["bass", "Penny Siopis" ]}
+			},
+			fields:{"data.field1":1},
+			sort:{"data.field1":1},
+			limit:1
+		}
+
+		var parameters2 = {
+			criteria:null,
+			fields:null,
+			sort:{"field1":1},
+			limit:1
+		}
+
+
+		var parameters3 = {
+			criteria:{
+				'data.keywords': {$all: ["bass", "Penny Siopis"]}
+			},
+			fields:null,
+			sort:{"data.field1":1},
+			limit:1
+		}
+
+		var parameters4 = {
+			criteria:{
+				'data.field1':'field1'
+			},
+			fields:null,
+			sort:{"data.field1":1},
+			limit:1
+		}
+
+		var parameters5 = {
+			criteria:{
+				'data.keywords': {$all: ["bass", "Penny Siopis","Non-existent"]}
+			},
+			fields:null,
+			sort:{"data.field1":1},
+			limit:1
+		}
+
+
+		/*
+
+		if (parameters.criteria)
+						searchParams.criteria = parameters.criteria;
+
+					if (parameters.fields)
+						searchParams.fields = parameters.fields;
+
+					if (parameters.sort)
+						searchParams.sort = parameters.sort;
+
+					if (parameters.limit)
+						searchParams.limit = parameters.limit;
+
+		*/
+
+		publisherclient.set('/e2e_test1/testsubscribe/data/complex_one', complex_obj, null, function(e, put_result){
+
+			if (!e){
+				console.log('IN COMPLEX SEARCH');
+				publisherclient.search('/e2e_test1/testsubscribe/data/complex*', parameters1, function(e, search_result){
+
+					console.log('here is the search_result');
+					console.log(search_result.data);
+					console.log(search_result.data[0].data);
+
+					for (var index in search_result.data)
+						console.log(index);
+
+					callback(e);
+
+				});
+			}else
+				callback(e);
+
+		});
+
+	});
+
+
+
 });
