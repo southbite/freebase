@@ -437,6 +437,8 @@ describe('e2e test', function() {
 					console.log(search_result.payload);
 					console.log(search_result.payload[0].data);
 
+					expect(search_result.payload.length > 0).to.be(true);
+
 					for (var index in search_result.payload)
 						console.log(index);
 

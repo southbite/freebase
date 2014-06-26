@@ -107,10 +107,11 @@ my_client_instance.set('e2e_test1/testsubscribe/data', {property1:'property1',pr
 			
 				if (!e){
 					//successful
+					console.log(result.payload);//payload is an object with the result with an _id and containing a [data] property with yr uploaded data
 
 ```
 
-POST
+PUT CHILD
 -------------------------
 
 *Posts your data to a collection that lives at the end of the specified branch (creates the collection if it doesnt exist), the getChild method will fetch your data back*
@@ -120,7 +121,7 @@ my_client_instance.setChild('e2e_test1/testsubscribe/data/collection', {property
 
 					if (!e){
 						//the child method returns a child in the collection with a specified id
-						my_client_instance.getChild('e2e_test1/testsubscribe/data/collection', results.data._id, function(e, results){
+						my_client_instance.getChild('e2e_test1/testsubscribe/data/collection', results.payload._id, function(e, results){
 ```
 
 GET
@@ -131,6 +132,7 @@ GET
 ```javascript
 publisherclient.get('e2e_test1/testsubscribe/data', null, function(e, results){
 	//results is your data
+	console.log(results.payload.length);//payload is now an array containing all the results for your get, get can also use a wildcard * in the path ie. publisherclient.get('e2e_test1/testsubscribe/data*'...
 ```
 
 DELETE
@@ -140,7 +142,7 @@ DELETE
 ```javascript
 	my_client_instance.remove('/e2e_test1/testsubscribe/data/delete_me', null, function(e, result){
 	if (!e)
-		//your item was deleted
+		//your item was deleted, result.payload is an object that lists the amount of objects deleted
 ```
 
 DELETE CHILD
@@ -152,7 +154,7 @@ DELETE CHILD
 my_client_instance.setChild('/e2e_test1/testsubscribe/data/catch_all_array', {property1:'property1',property2:'property2',property3:'property3'}, function(e, post_result){
 	if (!e){
 		//your item was added to a collection, now remove it
-		my_client_instance.removeChild('/e2e_test1/testsubscribe/data/catch_all_array', post_result.data._id, function(e, del_ar_result){
+		my_client_instance.removeChild('/e2e_test1/testsubscribe/data/catch_all_array', post_result.payload._id, function(e, del_ar_result){
 
 								
 ```
