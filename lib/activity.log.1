@@ -1,0 +1,487 @@
+[2014-07-09 16:15:03.974] [INFO] [default] - publish happened: /ALL@all
+[2014-07-09 16:15:03.987] [INFO] [default] - picked up subscription on channel: /PUT@/e2e_test1/testsubscribe/data/event
+[2014-07-09 16:15:03.992] [TRACE] [default] - message prepared
+[2014-07-09 16:15:03.992] [TRACE] [default] - { channel: '/PUT@/e2e_test1/testsubscribe/data/event',
+  data: 
+   { _id: 53aab376ae32b53874d3aa01,
+     data: 
+      { property1: 'property1',
+        property2: 'property2',
+        property3: 'property3' },
+     path: '/e2e_test1/testsubscribe/data/event',
+     response: {} },
+  clientId: 'bdc26ritzl8sxhp4s5l5atgepfuhvqz',
+  id: 'f',
+  clean_channel: '/e2e_test1/testsubscribe/data/event',
+  action: undefined }
+[2014-07-09 16:15:03.993] [INFO] [default] - publish happened: /PUT@/e2e_test1/testsubscribe/data/event
+[2014-07-09 16:15:03.995] [TRACE] [default] - message prepared
+[2014-07-09 16:15:03.995] [TRACE] [default] - { channel: '/ALL@all',
+  data: 
+   { payload: 
+      { _id: 53aab376ae32b53874d3aa01,
+        data: [Object],
+        path: '/e2e_test1/testsubscribe/data/event' },
+     path: '/e2e_test1/testsubscribe/data/event',
+     action: 'PUT',
+     params: {},
+     response: {} },
+  clientId: 'bdc26ritzl8sxhp4s5l5atgepfuhvqz',
+  id: 'g',
+  clean_channel: 'all',
+  action: undefined }
+[2014-07-09 16:15:03.996] [INFO] [default] - publish happened: /ALL@all
+[2014-07-09 16:15:04.000] [TRACE] [default] - message prepared
+[2014-07-09 16:15:04.000] [TRACE] [default] - { channel: '/PUT@/e2e_test1/testsubscribe/data/delete_me',
+  data: 
+   { _id: 53bd4e67ae32b53874d3aab7,
+     data: 
+      { property1: 'property1',
+        property2: 'property2',
+        property3: 'property3' },
+     path: '/e2e_test1/testsubscribe/data/delete_me',
+     response: {} },
+  clientId: 'bdc26ritzl8sxhp4s5l5atgepfuhvqz',
+  id: 'h',
+  clean_channel: '/e2e_test1/testsubscribe/data/delete_me',
+  action: undefined }
+[2014-07-09 16:15:04.000] [INFO] [default] - publish happened: /PUT@/e2e_test1/testsubscribe/data/delete_me
+[2014-07-09 16:15:04.001] [TRACE] [default] - message prepared
+[2014-07-09 16:15:04.001] [TRACE] [default] - { channel: '/ALL@all',
+  data: 
+   { payload: 
+      { _id: 53bd4e67ae32b53874d3aab7,
+        data: [Object],
+        path: '/e2e_test1/testsubscribe/data/delete_me' },
+     path: '/e2e_test1/testsubscribe/data/delete_me',
+     action: 'PUT',
+     params: {},
+     response: {} },
+  clientId: 'bdc26ritzl8sxhp4s5l5atgepfuhvqz',
+  id: 'i',
+  clean_channel: 'all',
+  action: undefined }
+[2014-07-09 16:15:04.001] [INFO] [default] - publish happened: /ALL@all
+[2014-07-09 16:15:04.005] [INFO] [default] - picked up subscription on channel: /DELETE@/e2e_test1/testsubscribe/data/delete_me
+[2014-07-09 16:15:04.008] [TRACE] [default] - message prepared
+[2014-07-09 16:15:04.008] [TRACE] [default] - { channel: '/DELETE@/e2e_test1/testsubscribe/data/delete_me',
+  data: 
+   { data: '/e2e_test1/testsubscribe/data/delete_me',
+     removed: 1,
+     response: {} },
+  clientId: 'bdc26ritzl8sxhp4s5l5atgepfuhvqz',
+  id: 'j',
+  clean_channel: '/e2e_test1/testsubscribe/data/delete_me',
+  action: undefined }
+[2014-07-09 16:15:04.009] [INFO] [default] - publish happened: /DELETE@/e2e_test1/testsubscribe/data/delete_me
+[2014-07-09 16:15:04.010] [TRACE] [default] - message prepared
+[2014-07-09 16:15:04.010] [TRACE] [default] - { channel: '/ALL@all',
+  data: 
+   { payload: { data: '/e2e_test1/testsubscribe/data/delete_me', removed: 1 },
+     path: '/e2e_test1/testsubscribe/data/delete_me',
+     action: 'DELETE',
+     params: {},
+     response: {} },
+  clientId: 'bdc26ritzl8sxhp4s5l5atgepfuhvqz',
+  id: 'k',
+  clean_channel: 'all',
+  action: undefined }
+[2014-07-09 16:15:04.011] [INFO] [default] - publish happened: /ALL@all
+[2014-07-09 16:15:04.016] [TRACE] [default] - message prepared
+[2014-07-09 16:15:04.016] [TRACE] [default] - { channel: '/PUT@/e2e_test1/testsubscribe/data/arr_delete_me',
+  data: 
+   { data: 
+      { property1: 'property1',
+        property2: 'property2',
+        property3: 'property3' },
+     _id: 'eyUKARUfZg',
+     response: {} },
+  clientId: 'bdc26ritzl8sxhp4s5l5atgepfuhvqz',
+  id: 'l',
+  clean_channel: '/e2e_test1/testsubscribe/data/arr_delete_me',
+  action: undefined }
+[2014-07-09 16:15:04.017] [INFO] [default] - publish happened: /PUT@/e2e_test1/testsubscribe/data/arr_delete_me
+[2014-07-09 16:15:04.018] [TRACE] [default] - message prepared
+[2014-07-09 16:15:04.018] [TRACE] [default] - { channel: '/ALL@all',
+  data: 
+   { payload: { data: [Object], _id: 'eyUKARUfZg' },
+     path: '/e2e_test1/testsubscribe/data/arr_delete_me',
+     action: 'PUT',
+     params: { set_type: 'child' },
+     response: {} },
+  clientId: 'bdc26ritzl8sxhp4s5l5atgepfuhvqz',
+  id: 'm',
+  clean_channel: 'all',
+  action: undefined }
+[2014-07-09 16:15:04.018] [INFO] [default] - publish happened: /ALL@all
+[2014-07-09 16:15:04.030] [TRACE] [default] - message prepared
+[2014-07-09 16:15:04.030] [TRACE] [default] - { channel: '/DELETE@/e2e_test1/testsubscribe/data/arr_delete_me',
+  data: { data: 'eyUKARUfZg', removed: 1, response: {} },
+  clientId: 'bdc26ritzl8sxhp4s5l5atgepfuhvqz',
+  id: 'n',
+  clean_channel: '/e2e_test1/testsubscribe/data/arr_delete_me',
+  action: undefined }
+[2014-07-09 16:15:04.031] [INFO] [default] - publish happened: /DELETE@/e2e_test1/testsubscribe/data/arr_delete_me
+[2014-07-09 16:15:04.032] [TRACE] [default] - message prepared
+[2014-07-09 16:15:04.032] [TRACE] [default] - { channel: '/ALL@all',
+  data: 
+   { payload: { data: 'eyUKARUfZg', removed: 1 },
+     path: '/e2e_test1/testsubscribe/data/arr_delete_me',
+     action: 'DELETE',
+     params: { child_id: 'eyUKARUfZg' },
+     response: {} },
+  clientId: 'bdc26ritzl8sxhp4s5l5atgepfuhvqz',
+  id: 'o',
+  clean_channel: 'all',
+  action: undefined }
+[2014-07-09 16:15:04.033] [INFO] [default] - publish happened: /ALL@all
+[2014-07-09 16:15:04.059] [TRACE] [default] - message prepared
+[2014-07-09 16:15:04.060] [TRACE] [default] - { channel: '/PUT@/e2e_test1/testsubscribe/data/complex_one',
+  data: 
+   { _id: 53aad33dae32b53874d3aa12,
+     data: 
+      { regions: [Object],
+        towns: [Object],
+        categories: [Object],
+        subcategories: [Object],
+        keywords: [Object],
+        field1: 'field1' },
+     path: '/e2e_test1/testsubscribe/data/complex_one',
+     response: {} },
+  clientId: 'bdc26ritzl8sxhp4s5l5atgepfuhvqz',
+  id: 'p',
+  clean_channel: '/e2e_test1/testsubscribe/data/complex_one',
+  action: undefined }
+[2014-07-09 16:15:04.060] [INFO] [default] - publish happened: /PUT@/e2e_test1/testsubscribe/data/complex_one
+[2014-07-09 16:15:04.061] [TRACE] [default] - message prepared
+[2014-07-09 16:15:04.061] [TRACE] [default] - { channel: '/ALL@all',
+  data: 
+   { payload: 
+      { _id: 53aad33dae32b53874d3aa12,
+        data: [Object],
+        path: '/e2e_test1/testsubscribe/data/complex_one' },
+     path: '/e2e_test1/testsubscribe/data/complex_one',
+     action: 'PUT',
+     params: {},
+     response: {} },
+  clientId: 'bdc26ritzl8sxhp4s5l5atgepfuhvqz',
+  id: 'q',
+  clean_channel: 'all',
+  action: undefined }
+[2014-07-09 16:15:04.061] [INFO] [default] - publish happened: /ALL@all
+[2014-07-09 16:15:58.475] [INFO] [default] - picked up subscription on channel: /sys@/worker_initialized
+[2014-07-09 16:15:58.477] [INFO] [default] - clientId: adcxc3lq02mrotu3u7p0g4wvs4zco5q
+[2014-07-09 16:15:59.063] [INFO] [default] - worker initialized: 32415
+[2014-07-09 16:15:59.205] [INFO] [default] - picked up subscription on channel: /ALL@all
+[2014-07-09 16:15:59.215] [TRACE] [default] - message prepared
+[2014-07-09 16:15:59.215] [TRACE] [default] - { channel: '/PUT@/e2e_test1/testsubscribe/data/catch_all',
+  data: 
+   { _id: 53bd4e9fae32b53874d3aab8,
+     data: 
+      { property1: 'property1',
+        property2: 'property2',
+        property3: 'property3' },
+     path: '/e2e_test1/testsubscribe/data/catch_all',
+     response: {} },
+  clientId: '3pe9ji728pryobm2l8dnbvamiby4via',
+  id: '3',
+  clean_channel: '/e2e_test1/testsubscribe/data/catch_all',
+  action: undefined }
+[2014-07-09 16:15:59.217] [INFO] [default] - publish happened: /PUT@/e2e_test1/testsubscribe/data/catch_all
+[2014-07-09 16:15:59.218] [TRACE] [default] - message prepared
+[2014-07-09 16:15:59.218] [TRACE] [default] - { channel: '/ALL@all',
+  data: 
+   { payload: 
+      { _id: 53bd4e9fae32b53874d3aab8,
+        data: [Object],
+        path: '/e2e_test1/testsubscribe/data/catch_all' },
+     path: '/e2e_test1/testsubscribe/data/catch_all',
+     action: 'PUT',
+     params: {},
+     response: {} },
+  clientId: '3pe9ji728pryobm2l8dnbvamiby4via',
+  id: '4',
+  clean_channel: 'all',
+  action: undefined }
+[2014-07-09 16:15:59.218] [INFO] [default] - publish happened: /ALL@all
+[2014-07-09 16:15:59.226] [TRACE] [default] - message prepared
+[2014-07-09 16:15:59.226] [TRACE] [default] - { channel: '/PUT@/e2e_test1/testsubscribe/data/catch_all_array',
+  data: 
+   { data: 
+      { property1: 'property1',
+        property2: 'property2',
+        property3: 'property3' },
+     _id: 'e1AolyvfZg',
+     response: {} },
+  clientId: '3pe9ji728pryobm2l8dnbvamiby4via',
+  id: '5',
+  clean_channel: '/e2e_test1/testsubscribe/data/catch_all_array',
+  action: undefined }
+[2014-07-09 16:15:59.227] [INFO] [default] - publish happened: /PUT@/e2e_test1/testsubscribe/data/catch_all_array
+[2014-07-09 16:15:59.227] [TRACE] [default] - message prepared
+[2014-07-09 16:15:59.227] [TRACE] [default] - { channel: '/ALL@all',
+  data: 
+   { payload: { data: [Object], _id: 'e1AolyvfZg' },
+     path: '/e2e_test1/testsubscribe/data/catch_all_array',
+     action: 'PUT',
+     params: { set_type: 'child' },
+     response: {} },
+  clientId: '3pe9ji728pryobm2l8dnbvamiby4via',
+  id: '6',
+  clean_channel: 'all',
+  action: undefined }
+[2014-07-09 16:15:59.228] [INFO] [default] - publish happened: /ALL@all
+[2014-07-09 16:15:59.238] [TRACE] [default] - message prepared
+[2014-07-09 16:15:59.238] [TRACE] [default] - { channel: '/DELETE@/e2e_test1/testsubscribe/data/catch_all',
+  data: 
+   { data: '/e2e_test1/testsubscribe/data/catch_all',
+     removed: 1,
+     response: {} },
+  clientId: '3pe9ji728pryobm2l8dnbvamiby4via',
+  id: '7',
+  clean_channel: '/e2e_test1/testsubscribe/data/catch_all',
+  action: undefined }
+[2014-07-09 16:15:59.238] [INFO] [default] - publish happened: /DELETE@/e2e_test1/testsubscribe/data/catch_all
+[2014-07-09 16:15:59.239] [TRACE] [default] - message prepared
+[2014-07-09 16:15:59.239] [TRACE] [default] - { channel: '/ALL@all',
+  data: 
+   { payload: { data: '/e2e_test1/testsubscribe/data/catch_all', removed: 1 },
+     path: '/e2e_test1/testsubscribe/data/catch_all',
+     action: 'DELETE',
+     params: {},
+     response: {} },
+  clientId: '3pe9ji728pryobm2l8dnbvamiby4via',
+  id: '8',
+  clean_channel: 'all',
+  action: undefined }
+[2014-07-09 16:15:59.239] [INFO] [default] - publish happened: /ALL@all
+[2014-07-09 16:15:59.244] [TRACE] [default] - message prepared
+[2014-07-09 16:15:59.244] [TRACE] [default] - { channel: '/DELETE@/e2e_test1/testsubscribe/data/catch_all_array',
+  data: { data: 'e1AolyvfZg', removed: 1, response: {} },
+  clientId: '3pe9ji728pryobm2l8dnbvamiby4via',
+  id: '9',
+  clean_channel: '/e2e_test1/testsubscribe/data/catch_all_array',
+  action: undefined }
+[2014-07-09 16:15:59.244] [INFO] [default] - publish happened: /DELETE@/e2e_test1/testsubscribe/data/catch_all_array
+[2014-07-09 16:15:59.245] [TRACE] [default] - message prepared
+[2014-07-09 16:15:59.245] [TRACE] [default] - { channel: '/ALL@all',
+  data: 
+   { payload: { data: 'e1AolyvfZg', removed: 1 },
+     path: '/e2e_test1/testsubscribe/data/catch_all_array',
+     action: 'DELETE',
+     params: { child_id: 'e1AolyvfZg' },
+     response: {} },
+  clientId: '3pe9ji728pryobm2l8dnbvamiby4via',
+  id: 'a',
+  clean_channel: 'all',
+  action: undefined }
+[2014-07-09 16:15:59.246] [INFO] [default] - publish happened: /ALL@all
+[2014-07-09 16:15:59.251] [TRACE] [default] - message prepared
+[2014-07-09 16:15:59.251] [TRACE] [default] - { channel: '/PUT@/e2e_test1/testsubscribe/data',
+  data: 
+   { _id: 53aaae46ae32b53874d3a9ff,
+     data: 
+      { property1: 'property1',
+        property2: 'property2',
+        property3: 'property3' },
+     path: '/e2e_test1/testsubscribe/data',
+     response: {} },
+  clientId: '3pe9ji728pryobm2l8dnbvamiby4via',
+  id: 'b',
+  clean_channel: '/e2e_test1/testsubscribe/data',
+  action: undefined }
+[2014-07-09 16:15:59.251] [INFO] [default] - publish happened: /PUT@/e2e_test1/testsubscribe/data
+[2014-07-09 16:15:59.252] [TRACE] [default] - message prepared
+[2014-07-09 16:15:59.252] [TRACE] [default] - { channel: '/ALL@all',
+  data: 
+   { payload: 
+      { _id: 53aaae46ae32b53874d3a9ff,
+        data: [Object],
+        path: '/e2e_test1/testsubscribe/data' },
+     path: '/e2e_test1/testsubscribe/data',
+     action: 'PUT',
+     params: {},
+     response: {} },
+  clientId: '3pe9ji728pryobm2l8dnbvamiby4via',
+  id: 'c',
+  clean_channel: 'all',
+  action: undefined }
+[2014-07-09 16:15:59.253] [INFO] [default] - publish happened: /ALL@all
+[2014-07-09 16:15:59.262] [TRACE] [default] - message prepared
+[2014-07-09 16:15:59.262] [TRACE] [default] - { channel: '/PUT@/e2e_test1/testsubscribe/data/collection',
+  data: 
+   { data: { property1: 'post_property1', property2: 'post_property2' },
+     _id: 'x1lAjgJPMWe',
+     response: {} },
+  clientId: '3pe9ji728pryobm2l8dnbvamiby4via',
+  id: 'd',
+  clean_channel: '/e2e_test1/testsubscribe/data/collection',
+  action: undefined }
+[2014-07-09 16:15:59.264] [INFO] [default] - publish happened: /PUT@/e2e_test1/testsubscribe/data/collection
+[2014-07-09 16:15:59.264] [TRACE] [default] - message prepared
+[2014-07-09 16:15:59.264] [TRACE] [default] - { channel: '/ALL@all',
+  data: 
+   { payload: { data: [Object], _id: 'x1lAjgJPMWe' },
+     path: '/e2e_test1/testsubscribe/data/collection',
+     action: 'PUT',
+     params: { set_type: 'child' },
+     response: {} },
+  clientId: '3pe9ji728pryobm2l8dnbvamiby4via',
+  id: 'e',
+  clean_channel: 'all',
+  action: undefined }
+[2014-07-09 16:15:59.265] [INFO] [default] - publish happened: /ALL@all
+[2014-07-09 16:15:59.276] [INFO] [default] - picked up subscription on channel: /PUT@/e2e_test1/testsubscribe/data/event
+[2014-07-09 16:15:59.280] [TRACE] [default] - message prepared
+[2014-07-09 16:15:59.280] [TRACE] [default] - { channel: '/PUT@/e2e_test1/testsubscribe/data/event',
+  data: 
+   { _id: 53aab376ae32b53874d3aa01,
+     data: 
+      { property1: 'property1',
+        property2: 'property2',
+        property3: 'property3' },
+     path: '/e2e_test1/testsubscribe/data/event',
+     response: {} },
+  clientId: '3pe9ji728pryobm2l8dnbvamiby4via',
+  id: 'f',
+  clean_channel: '/e2e_test1/testsubscribe/data/event',
+  action: undefined }
+[2014-07-09 16:15:59.280] [INFO] [default] - publish happened: /PUT@/e2e_test1/testsubscribe/data/event
+[2014-07-09 16:15:59.281] [TRACE] [default] - message prepared
+[2014-07-09 16:15:59.281] [TRACE] [default] - { channel: '/ALL@all',
+  data: 
+   { payload: 
+      { _id: 53aab376ae32b53874d3aa01,
+        data: [Object],
+        path: '/e2e_test1/testsubscribe/data/event' },
+     path: '/e2e_test1/testsubscribe/data/event',
+     action: 'PUT',
+     params: {},
+     response: {} },
+  clientId: '3pe9ji728pryobm2l8dnbvamiby4via',
+  id: 'g',
+  clean_channel: 'all',
+  action: undefined }
+[2014-07-09 16:15:59.282] [INFO] [default] - publish happened: /ALL@all
+[2014-07-09 16:15:59.287] [TRACE] [default] - message prepared
+[2014-07-09 16:15:59.287] [TRACE] [default] - { channel: '/PUT@/e2e_test1/testsubscribe/data/delete_me',
+  data: 
+   { _id: 53bd4e9fae32b53874d3aab9,
+     data: 
+      { property1: 'property1',
+        property2: 'property2',
+        property3: 'property3' },
+     path: '/e2e_test1/testsubscribe/data/delete_me',
+     response: {} },
+  clientId: '3pe9ji728pryobm2l8dnbvamiby4via',
+  id: 'h',
+  clean_channel: '/e2e_test1/testsubscribe/data/delete_me',
+  action: undefined }
+[2014-07-09 16:15:59.289] [INFO] [default] - publish happened: /PUT@/e2e_test1/testsubscribe/data/delete_me
+[2014-07-09 16:15:59.290] [TRACE] [default] - message prepared
+[2014-07-09 16:15:59.290] [TRACE] [default] - { channel: '/ALL@all',
+  data: 
+   { payload: 
+      { _id: 53bd4e9fae32b53874d3aab9,
+        data: [Object],
+        path: '/e2e_test1/testsubscribe/data/delete_me' },
+     path: '/e2e_test1/testsubscribe/data/delete_me',
+     action: 'PUT',
+     params: {},
+     response: {} },
+  clientId: '3pe9ji728pryobm2l8dnbvamiby4via',
+  id: 'i',
+  clean_channel: 'all',
+  action: undefined }
+[2014-07-09 16:15:59.291] [INFO] [default] - publish happened: /ALL@all
+[2014-07-09 16:15:59.294] [INFO] [default] - picked up subscription on channel: /DELETE@/e2e_test1/testsubscribe/data/delete_me
+[2014-07-09 16:15:59.298] [TRACE] [default] - message prepared
+[2014-07-09 16:15:59.298] [TRACE] [default] - { channel: '/DELETE@/e2e_test1/testsubscribe/data/delete_me',
+  data: 
+   { data: '/e2e_test1/testsubscribe/data/delete_me',
+     removed: 1,
+     response: {} },
+  clientId: '3pe9ji728pryobm2l8dnbvamiby4via',
+  id: 'j',
+  clean_channel: '/e2e_test1/testsubscribe/data/delete_me',
+  action: undefined }
+[2014-07-09 16:15:59.299] [INFO] [default] - publish happened: /DELETE@/e2e_test1/testsubscribe/data/delete_me
+[2014-07-09 16:15:59.302] [TRACE] [default] - message prepared
+[2014-07-09 16:15:59.302] [TRACE] [default] - { channel: '/ALL@all',
+  data: 
+   { payload: { data: '/e2e_test1/testsubscribe/data/delete_me', removed: 1 },
+     path: '/e2e_test1/testsubscribe/data/delete_me',
+     action: 'DELETE',
+     params: {},
+     response: {} },
+  clientId: '3pe9ji728pryobm2l8dnbvamiby4via',
+  id: 'k',
+  clean_channel: 'all',
+  action: undefined }
+[2014-07-09 16:15:59.303] [INFO] [default] - publish happened: /ALL@all
+[2014-07-09 16:15:59.315] [TRACE] [default] - message prepared
+[2014-07-09 16:15:59.315] [TRACE] [default] - { channel: '/PUT@/e2e_test1/testsubscribe/data/arr_delete_me',
+  data: 
+   { data: 
+      { property1: 'property1',
+        property2: 'property2',
+        property3: 'property3' },
+     _id: 'x1J3eJwz-x',
+     response: {} },
+  clientId: '3pe9ji728pryobm2l8dnbvamiby4via',
+  id: 'l',
+  clean_channel: '/e2e_test1/testsubscribe/data/arr_delete_me',
+  action: undefined }
+[2014-07-09 16:15:59.315] [INFO] [default] - publish happened: /PUT@/e2e_test1/testsubscribe/data/arr_delete_me
+[2014-07-09 16:15:59.316] [TRACE] [default] - message prepared
+[2014-07-09 16:15:59.316] [TRACE] [default] - { channel: '/ALL@all',
+  data: 
+   { payload: { data: [Object], _id: 'x1J3eJwz-x' },
+     path: '/e2e_test1/testsubscribe/data/arr_delete_me',
+     action: 'PUT',
+     params: { set_type: 'child' },
+     response: {} },
+  clientId: '3pe9ji728pryobm2l8dnbvamiby4via',
+  id: 'm',
+  clean_channel: 'all',
+  action: undefined }
+[2014-07-09 16:15:59.316] [INFO] [default] - publish happened: /ALL@all
+[2014-07-09 16:15:59.323] [TRACE] [default] - message prepared
+[2014-07-09 16:15:59.323] [TRACE] [default] - { channel: '/DELETE@/e2e_test1/testsubscribe/data/arr_delete_me',
+  data: { data: 'x1J3eJwz-x', removed: 1, response: {} },
+  clientId: '3pe9ji728pryobm2l8dnbvamiby4via',
+  id: 'n',
+  clean_channel: '/e2e_test1/testsubscribe/data/arr_delete_me',
+  action: undefined }
+[2014-07-09 16:15:59.324] [INFO] [default] - publish happened: /DELETE@/e2e_test1/testsubscribe/data/arr_delete_me
+[2014-07-09 16:15:59.326] [TRACE] [default] - message prepared
+[2014-07-09 16:15:59.326] [TRACE] [default] - { channel: '/ALL@all',
+  data: 
+   { payload: { data: 'x1J3eJwz-x', removed: 1 },
+     path: '/e2e_test1/testsubscribe/data/arr_delete_me',
+     action: 'DELETE',
+     params: { child_id: 'x1J3eJwz-x' },
+     response: {} },
+  clientId: '3pe9ji728pryobm2l8dnbvamiby4via',
+  id: 'o',
+  clean_channel: 'all',
+  action: undefined }
+[2014-07-09 16:15:59.326] [INFO] [default] - publish happened: /ALL@all
+[2014-07-09 16:15:59.344] [TRACE] [default] - message prepared
+[2014-07-09 16:15:59.344] [TRACE] [default] - { channel: '/PUT@/e2e_test1/testsubscribe/data/complex_one',
+  data: 
+   { _id: 53aad33dae32b53874d3aa12,
+     data: 
+      { regions: [Object],
+        towns: [Object],
+        categories: [Object],
+        subcategories: [Object],
+        keywords: [Object],
+        field1: 'field1' },
+     path: '/e2e_test1/testsubscribe/data/complex_one',
+     response: {} },
+  clientId: '3pe9ji728pryobm2l8dnbvamiby4via',
+  id: 'p',
+  clean_channel: '/e2e_test1/testsubscribe/data/complex_one',
+  action: undefined }
+[2014-07-09 16:15:59.345] [INFO] [default] - publish happened: /PUT@/e2e_test1/testsubscribe/data/complex_one

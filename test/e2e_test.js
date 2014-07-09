@@ -28,7 +28,7 @@ describe('e2e test', function() {
 			service.initialize({size:1, port:testport, services:{
 				auth:{authTokenSecret:'a256a2fd43bf441483c5177fc85fd9d3',
 				systemSecret:test_secret},
-				utils:{log_level:'info|error|warning'}
+				utils:null
 			}}, function(e){
 				callback(e);
 			});
@@ -87,9 +87,9 @@ describe('e2e test', function() {
 			if (!caught[message.action])
 				caught[message.action] = 0;
 
-			console.log('ONALL ' + message);
+			//console.log('ONALL ' + message);
 
-			console.log(message);
+			//console.log(message);
 
 			caught[message.action]++;
 			
@@ -105,19 +105,19 @@ describe('e2e test', function() {
 
 				publisherclient.set('/e2e_test1/testsubscribe/data/catch_all', {property1:'property1',property2:'property2',property3:'property3'}, null, function(e, put_result){
 
-					console.log(put_result);
+					//console.log(put_result);
 
 					publisherclient.setChild('/e2e_test1/testsubscribe/data/catch_all_array', {property1:'property1',property2:'property2',property3:'property3'}, function(e, post_result){
 
-						console.log(post_result);
+						//console.log(post_result);
 
 						publisherclient.remove('/e2e_test1/testsubscribe/data/catch_all', null, function(e, del_result){
 
-							console.log(del_result);
+							//console.log(del_result);
 
 							publisherclient.removeChild('/e2e_test1/testsubscribe/data/catch_all_array', post_result.payload._id, function(e, del_ar_result){
 
-								console.log(del_ar_result);
+								//console.log(del_ar_result);
 						
 							});
 					
@@ -205,17 +205,17 @@ describe('e2e test', function() {
 
 			}, function(e){
 
-				//console.log('ON HAS HAPPENED: ' + e);
+				////console.log('ON HAS HAPPENED: ' + e);
 
 				if (!e){
 
 					expect(listenerclient.events['/PUT@/e2e_test1/testsubscribe/data/event'].length).to.be(1);
 
-					//console.log('on subscribed, about to publish');
+					////console.log('on subscribed, about to publish');
 
 					//then make the change
 					publisherclient.set('/e2e_test1/testsubscribe/data/event', {property1:'property1',property2:'property2',property3:'property3'}, null, function(e, result){
-						//console.log('put happened - listening for result');
+						////console.log('put happened - listening for result');
 					});
 				}else
 					callback(e);
@@ -242,8 +242,8 @@ describe('e2e test', function() {
 					//We listen for the DELETE event
 					listenerclient.on('/e2e_test1/testsubscribe/data/delete_me', 'DELETE', 1, function(e, message){
 
-						console.log('delete message');
-						console.log(message);
+						//console.log('delete message');
+						//console.log(message);
 
 						//we are looking at the event internals on the listener to ensure our event management is working - because we are only listening for 1
 						//instance of this event - the event listener should have been removed 
@@ -252,23 +252,23 @@ describe('e2e test', function() {
 						//we needed to have removed a single item
 						expect(message.removed).to.be(1);
 
-						//console.log(message);
+						////console.log(message);
 
 						callback(e);
 
 					}, function(e){
 
-						//console.log('ON HAS HAPPENED: ' + e);
+						////console.log('ON HAS HAPPENED: ' + e);
 
 						if (!e){
 
 							expect(listenerclient.events['/DELETE@/e2e_test1/testsubscribe/data/delete_me'].length).to.be(1);
 
-							//console.log('subscribed, about to delete');
+							////console.log('subscribed, about to delete');
 
 							//We perform the actual delete
 							publisherclient.remove('/e2e_test1/testsubscribe/data/delete_me', null, function(e, result){
-								//console.log('put happened - listening for result');
+								////console.log('put happened - listening for result');
 							});
 						}else
 							callback(e);
@@ -292,8 +292,8 @@ describe('e2e test', function() {
 
 				publisherclient.setChild('/e2e_test1/testsubscribe/data/arr_delete_me', {property1:'property1',property2:'property2',property3:'property3'}, function(e, post_result){
 
-					console.log('post_result');
-					console.log(post_result);
+					//console.log('post_result');
+					//console.log(post_result);
 
 					if (e)
 						return callback(e);
@@ -303,8 +303,8 @@ describe('e2e test', function() {
 						if (e)
 							return callback(e);
 
-						console.log('got array');
-						console.log(results);
+						//console.log('got array');
+						//console.log(results);
 
 						expect(results.payload.length).to.be(1);
 
@@ -313,13 +313,13 @@ describe('e2e test', function() {
 							if (e)
 							return callback(e);
 
-							//console.log('delete happened');
-							//console.log(delete_result);
+							////console.log('delete happened');
+							////console.log(delete_result);
 
 							publisherclient.get('/e2e_test1/testsubscribe/data/arr_delete_me', null, function(e, results){
 
-								console.log('get after delete happened');
-								console.log(results);
+								//console.log('get after delete happened');
+								//console.log(results);
 
 								if (e)
 									return callback(e);
@@ -366,7 +366,7 @@ describe('e2e test', function() {
 
 	it('should search for a complex object', function(callback) {
 
-		console.log('DOING COMPLEX SEARCH');
+		//console.log('DOING COMPLEX SEARCH');
 
 		var complex_obj = {
 			regions:['North','South','East','West'],
@@ -430,17 +430,17 @@ describe('e2e test', function() {
 		publisherclient.set('/e2e_test1/testsubscribe/data/complex_one', complex_obj, null, function(e, put_result){
 
 			if (!e){
-				console.log('IN COMPLEX SEARCH');
+				//console.log('IN COMPLEX SEARCH');
 				publisherclient.search('/e2e_test1/testsubscribe/data/complex*', parameters1, function(e, search_result){
 
-					console.log('here is the search_result');
-					console.log(search_result.payload);
-					console.log(search_result.payload[0].data);
+					//console.log('here is the search_result');
+					//console.log(search_result.payload);
+					//console.log(search_result.payload[0].data);
 
 					expect(search_result.payload.length > 0).to.be(true);
 
 					for (var index in search_result.payload)
-						console.log(index);
+						//console.log(index);
 
 					callback(e);
 
