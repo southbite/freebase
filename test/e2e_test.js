@@ -188,6 +188,34 @@ describe('e2e test', function() {
 		}
 	});
 
+	it('the publisher should push a sibling and get all siblings', function(callback) {
+		
+		this.timeout(10000);
+
+		try{
+
+				publisherclient.setSibling('e2e_test1/siblings', {property1:'sib_post_property1',property2:'sib_post_property2'}, function(e, results){
+
+					if (!e){
+						//the child method returns a child in the collection with a specified id
+						publisherclient.get('e2e_test1/siblings*', null, function(e, results){
+							console.log('siblings set');
+							console.log(results);
+							expect(results.payload.length > 0).to.be(true);
+							callback(e);
+						});
+
+					}else
+						callback(e);
+
+				});
+					
+
+		}catch(e){
+			callback(e);
+		}
+	});
+
 
 //	We set the listener client to listen for a PUT event according to a path, then we set a value with the publisher client.
 
@@ -303,8 +331,8 @@ describe('e2e test', function() {
 						if (e)
 							return callback(e);
 
-						//console.log('got array');
-						//console.log(results);
+						console.log('got array');
+						console.log(results);
 
 						expect(results.payload.length).to.be(1);
 
@@ -313,18 +341,24 @@ describe('e2e test', function() {
 							if (e)
 							return callback(e);
 
-							////console.log('delete happened');
-							////console.log(delete_result);
+							console.log('delete happened');
+							console.log(delete_result);
 
 							publisherclient.get('/e2e_test1/testsubscribe/data/arr_delete_me', null, function(e, results){
 
-								//console.log('get after delete happened');
-								//console.log(results);
+								console.log('get after delete happened');
+								console.log(results.payload[0].data);
 
 								if (e)
 									return callback(e);
 
-								expect(results.payload.length).to.be(0);
+								var foundChild = false;
+								results.payload[0].data.map(function(child){
+									if (child._id == post_result.payload._id)
+										foundChild = true;
+								});
+
+								expect(foundChild).to.be(false);
 
 								callback(e);
 

@@ -124,6 +124,16 @@ my_client_instance.setChild('e2e_test1/testsubscribe/data/collection', {property
 						my_client_instance.getChild('e2e_test1/testsubscribe/data/collection', results.payload._id, function(e, results){
 ```
 
+PUT SIBLING
+-------------------------
+
+*Posts your data to a unique path starting with the path you passed in as a parameter*
+
+```javascript
+	my_client_instance.setSibling('e2e_test1/siblings', {property1:'sib_post_property1',property2:'sib_post_property2'}, function(e, results){
+		//you would get all siblings by querying the path e2e_test1/siblings*
+```
+
 GET
 ---------------------------
 
