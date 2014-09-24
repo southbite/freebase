@@ -486,5 +486,30 @@ describe('e2e test', function() {
 
 	});
 
+	it('should fail to subscribe to an event', function(callback) {
 
+		console.log('bad subscribe');
+		var faye = require('faye');
+
+		var bad_client = new faye.Client('http://localhost:' + testport + '/events');
+
+		var subscription = bad_client.subscribe('/all@all', function(message){
+			callback('you werent meant to get anything here');	
+		});
+
+		subscription.then(function(e){
+			if (!e){
+				publisherclient.set('/e2e_test1/testsubscribe/data/private', {prop1:'private prop1'}, null, function(e, put_result){
+
+				});
+			}else{
+				console.log('failed to subscribe');
+				console.log(e);
+				callback();
+			}
+		});
+
+	});
+
+	
 });
