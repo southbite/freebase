@@ -474,7 +474,7 @@ describe('e2e test', function() {
 					expect(search_result.payload.length > 0).to.be(true);
 
 					for (var index in search_result.payload)
-						//console.log(index);
+						console.log(index);
 
 					callback(e);
 
@@ -488,26 +488,41 @@ describe('e2e test', function() {
 
 	it('should fail to subscribe to an event', function(callback) {
 
+		this.timeout(10000);
+
 		console.log('bad subscribe');
 		var faye = require('faye');
 
-		var bad_client = new faye.Client('http://localhost:' + testport + '/events');
+		var outgoing_extension = {
+		session_token:'blahblah',
+			outgoing: function(message, callback) {
+				message.session_token = this.session_token;
+				callback(message);
+			}
+		}
 
-		var subscription = bad_client.subscribe('/all@all', function(message){
-			callback('you werent meant to get anything here');	
+		//http://localhost:8000/events
+		var bad_client = new faye.Client('http://localhost:' + testport + '/events');
+		bad_client.addExtension(outgoing_extension);
+
+		var subscription = bad_client.subscribe('/ALL@all', function(message){
+				
 		});
+
+		var subWasSuccessful = false;
 
 		subscription.then(function(e){
-			if (!e){
-				publisherclient.set('/e2e_test1/testsubscribe/data/private', {prop1:'private prop1'}, null, function(e, put_result){
-
-				});
-			}else{
-				console.log('failed to subscribe');
-				console.log(e);
-				callback();
-			}
+			subWasSuccessful = true;
 		});
+
+		setTimeout(function(){
+
+			if (subWasSuccessful)
+				callback('unauthorized subscribe was let through');
+			else
+				callback();
+
+		}, 3000);
 
 	});
 
