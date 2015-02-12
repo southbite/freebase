@@ -87,10 +87,6 @@ describe('e2e test', function() {
 			if (!caught[message.action])
 				caught[message.action] = 0;
 
-			//console.log('ONALL ' + message);
-
-			//console.log(message);
-
 			caught[message.action]++;
 			
 			if (caught['PUT'] == 2 && caught['DELETE'] == 2)
@@ -526,5 +522,42 @@ describe('e2e test', function() {
 
 	});
 
-	
+	it('should tag some test data', function(callback) {
+
+		var randomTag = require('shortid').generate();
+
+		publisherclient.set('e2e_test1/test/tag', {property1:'property1',property2:'property2',property3:'property3'}, {tag:randomTag}, function(e, result){
+
+			if (!e){
+				publisherclient.get('e2e_test1/test/tag/tags/*', null, function(e, results){
+
+					expect(e).to.be(null);
+					expect(results.payload.length > 0);
+
+					var found = false;
+
+					results.payload.map(function(tagged){
+
+						if (found)
+							return;
+
+						console.log('tagged, comparing to ' + randomTag);
+						console.log(tagged.snapshot.tag);
+
+						if (tagged.snapshot.tag == randomTag)
+							found = true;
+
+					});
+
+					if (!found)
+						callback('couldn\'t find the tag snapshot');
+					else
+						callback();
+
+				});
+			}else
+				callback(e);
+		});
+
+	});	
 });
