@@ -21,7 +21,7 @@ describe('e2e test', function() {
 
 	it('should initialize the service', function(callback) {
 		
-		this.timeout(20000);
+		this.timeout(5000);
 
 		try{
 
@@ -74,6 +74,8 @@ describe('e2e test', function() {
 			callback(e);
 		}
 	});
+
+
 
 
 	it('should subscribe to the catch all notification', function(callback) {
@@ -134,7 +136,7 @@ describe('e2e test', function() {
 
 	it('the publisher should set data ', function(callback) {
 		
-		this.timeout(10000);
+		this.timeout(2000);
 
 		try{
 
@@ -155,8 +157,48 @@ describe('e2e test', function() {
 		}
 	});
 
+	it('should set data, and then merge a new document into the data without overwriting old fields', function(callback) {
+		
+		this.timeout(2000);
+
+		try{
+
+			publisherclient.set('e2e_test1/testsubscribe/data/merge', {property1:'property1',property2:'property2',property3:'property3'}, null, function(e, result){
+			
+				if (!e){
+					publisherclient.set('e2e_test1/testsubscribe/data/merge', {property4:'property4'}, {merge:true}, function(e, result){
+
+						if (e)
+							return callback(e);
+
+						publisherclient.get('e2e_test1/testsubscribe/data/merge', null, function(e, results){
+
+							if (e)
+								return callback(e);
+
+							console.log('in merge test');
+							console.log(results.payload[0].data);
+
+							expect(results.payload[0].data.property4).to.be('property4');
+							expect(results.payload[0].data.property1).to.be('property1');
+							
+							callback();
+
+						});  
+
+					});
+				}else
+					callback(e);
+			});
+
+		}catch(e){
+			callback(e);
+		}
+	});
+
 
 	//We are testing pushing a specific value to a path which will actually become an array in the database
+
 
 
 	it('the publisher should push to a collection and get a child', function(callback) {
@@ -560,4 +602,64 @@ describe('e2e test', function() {
 		});
 
 	});	
+
+	it('should merge tag some test data', function(callback) {
+
+		var randomTag = require('shortid').generate();
+
+		publisherclient.set('e2e_test1/test/tag', {property1:'property1',property2:'property2',property3:'property3'}, null, function(e, result){
+
+			if (!e){
+
+			publisherclient.set('e2e_test1/test/tag', {property4:'property4'}, {tag:randomTag, merge:true}, function(e, result){
+
+				if (!e){
+
+					console.log('merge result!!!');
+					console.log(result);
+
+					expect(result.payload.data.property1).to.be('property1');
+					expect(result.payload.data.property4).to.be('property4');
+
+					publisherclient.get('e2e_test1/test/tag/tags/*', null, function(e, results){
+
+						expect(e).to.be(null);
+						expect(results.payload.length > 0).to.be(true);
+						
+
+						var found = false;
+
+						results.payload.map(function(tagged){
+
+							if (found)
+								return;
+
+							if (tagged.snapshot.tag == randomTag){
+								expect(tagged.snapshot.data.property1).to.be('property1');
+								expect(tagged.snapshot.data.property4).to.be('property4');
+								found = true;
+							}
+			
+						});
+
+						if (!found)
+							callback('couldn\'t find the tag snapshot');
+						else
+							callback();
+
+					});
+				}else
+					callback(e);
+
+			});
+
+		}
+		else
+			callback(e);
+
+			
+		});
+
+	});	
+
 });
