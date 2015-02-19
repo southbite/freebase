@@ -660,6 +660,36 @@ describe('e2e test', function() {
 			
 		});
 
-	});	
+	});
+
+	it('should save by id, then search and get by id, using bsonid property', function(callback) {
+
+		var randomPath = require('shortid').generate();
+
+		publisherclient.set('e2e_test1/test/bsinid/' + randomPath, {property1:'property1',property2:'property2',property3:'property3'}, {}, function(e, setresult){
+
+			if (!e){
+
+				console.log(setresult);
+
+				var searchcriteria = {
+					criteria:{
+						'_id': {$in: [{bsonid:setresult.payload._id}]}
+					}
+				}
+
+				publisherclient.search('e2e_test1/test/bsinid/*' , searchcriteria, function(e, results){
+
+					expect(e).to.be(null);
+					console.log(results);
+					expect(results.payload.length == 1).to.be(true);
+					callback();
+
+				});
+			}else
+				callback(e);
+		});
+
+	});		
 
 });

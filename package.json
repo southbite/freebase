@@ -20,7 +20,8 @@
     "JSONStream": "~0.8.3",
     "log4js": "~0.6.10",
     "underscore": "~1.7.0",
-    "underscore.string": "~2.3.3"
+    "underscore.string": "~2.3.3",
+    "traverse": "~0.6.6"
   },
   "devDependencies": {
     "mocha": "~1.12.0",
