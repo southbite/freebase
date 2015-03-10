@@ -1,7 +1,5 @@
 var expect = require('expect.js');
-
 var freebase = require('../lib/index')
-
 var service = freebase.service;
 var freebase_client = freebase.client;
 var config  = require('./config');
@@ -25,13 +23,41 @@ describe('e2e test', function() {
 
 		try{
 
-			service.initialize({size:1, port:testport, services:{
-				auth:{authTokenSecret:'a256a2fd43bf441483c5177fc85fd9d3',
-				systemSecret:test_secret},
-				utils:null
-			}}, function(e){
-				callback(e);
-			});
+			var mode = "embedded";
+
+			if (mode == "embedded"){
+				service.initialize({services:{
+					auth:{
+						authTokenSecret:'a256a2fd43bf441483c5177fc85fd9d3',
+						systemSecret:test_secret
+					},
+					data:{
+						mode:'embedded'
+					},
+					utils:null
+				}}, function(e){
+					callback(e);
+				});
+			}else if (mode == "cluster"){
+				service.initialize({mode:'cluster', size:2, port:testport, services:{
+					auth:{authTokenSecret:'a256a2fd43bf441483c5177fc85fd9d3',
+					systemSecret:test_secret},
+					utils:null
+				}}, function(e){
+					callback(e);
+				});
+			}else {
+				service.initialize({port:testport, services:{
+					auth:{
+						authTokenSecret:'a256a2fd43bf441483c5177fc85fd9d3',
+						systemSecret:test_secret
+					},
+					data:{},
+					utils:null
+				}}, function(e){
+					callback(e);
+				});
+			}
 
 		}catch(e){
 			callback(e);
@@ -75,8 +101,105 @@ describe('e2e test', function() {
 		}
 	});
 
+	//We are testing setting data at a specific path
+
+	it('the publisher should set data ', function(callback) {
+		
+		this.timeout(2000);
+
+		try{
+
+			publisherclient.set('e2e_test1/testsubscribe/data', {property1:'property1',property2:'property2',property3:'property3'}, null, function(e, result){
+			
+				if (!e){
+					publisherclient.get('e2e_test1/testsubscribe/data', null, function(e, results){
+
+						console.log('DID GET');
+						console.log(e);
+						console.log(results);
+						expect(results.payload.length == 1).to.be(true);
+						callback(e);
+					});
+				}else
+					callback(e);
+			});
+
+		}catch(e){
+			callback(e);
+		}
+	});
 
 
+	it('the publisher should push to a collection and get a child', function(callback) {
+		
+		this.timeout(10000);
+
+		try{
+
+				publisherclient.setChild('e2e_test1/testsubscribe/data/collection', {property1:'post_property1',property2:'post_property2'}, function(e, results){
+
+					if (!e){
+						//the child method returns a child in the collection with a specified id
+						publisherclient.getChild('e2e_test1/testsubscribe/data/collection', results.payload._id, function(e, results){
+							console.log('in getchild');
+							console.log(results);
+							expect(results.payload.length == 1).to.be(true);
+							callback(e);
+						});
+
+					}else
+						callback(e);
+
+				});
+					
+
+		}catch(e){
+			callback(e);
+		}
+	});
+
+	it('should set data, and then merge a new document into the data without overwriting old fields', function(callback) {
+		
+		this.timeout(2000);
+
+		try{
+
+			publisherclient.set('e2e_test1/testsubscribe/data/merge', {property1:'property1',property2:'property2',property3:'property3'}, null, function(e, result){
+			
+				if (!e){
+					publisherclient.set('e2e_test1/testsubscribe/data/merge', {property4:'property4'}, {merge:true}, function(e, result){
+
+						if (e)
+							return callback(e);
+
+						publisherclient.get('e2e_test1/testsubscribe/data/merge', null, function(e, results){
+
+							if (e)
+								return callback(e);
+
+							console.log('in merge test');
+							console.log(results);
+
+							console.log(results.payload[0].data);
+
+							expect(results.payload[0].data.property4).to.be('property4');
+							expect(results.payload[0].data.property1).to.be('property1');
+							
+							callback();
+
+						});  
+
+					});
+				}else
+					callback(e);
+			});
+
+		}catch(e){
+			callback(e);
+		}
+	});
+
+	
 
 	it('should subscribe to the catch all notification', function(callback) {
 
@@ -131,100 +254,15 @@ describe('e2e test', function() {
 
 	});
 
-	//We are testing setting data at a specific path
+	
 
-
-	it('the publisher should set data ', function(callback) {
-		
-		this.timeout(2000);
-
-		try{
-
-			publisherclient.set('e2e_test1/testsubscribe/data', {property1:'property1',property2:'property2',property3:'property3'}, null, function(e, result){
-			
-				if (!e){
-					publisherclient.get('e2e_test1/testsubscribe/data', null, function(e, results){
-
-						callback(e);
-
-					});
-				}else
-					callback(e);
-			});
-
-		}catch(e){
-			callback(e);
-		}
-	});
-
-	it('should set data, and then merge a new document into the data without overwriting old fields', function(callback) {
-		
-		this.timeout(2000);
-
-		try{
-
-			publisherclient.set('e2e_test1/testsubscribe/data/merge', {property1:'property1',property2:'property2',property3:'property3'}, null, function(e, result){
-			
-				if (!e){
-					publisherclient.set('e2e_test1/testsubscribe/data/merge', {property4:'property4'}, {merge:true}, function(e, result){
-
-						if (e)
-							return callback(e);
-
-						publisherclient.get('e2e_test1/testsubscribe/data/merge', null, function(e, results){
-
-							if (e)
-								return callback(e);
-
-							console.log('in merge test');
-							console.log(results.payload[0].data);
-
-							expect(results.payload[0].data.property4).to.be('property4');
-							expect(results.payload[0].data.property1).to.be('property1');
-							
-							callback();
-
-						});  
-
-					});
-				}else
-					callback(e);
-			});
-
-		}catch(e){
-			callback(e);
-		}
-	});
 
 
 	//We are testing pushing a specific value to a path which will actually become an array in the database
 
 
 
-	it('the publisher should push to a collection and get a child', function(callback) {
-		
-		this.timeout(10000);
-
-		try{
-
-				publisherclient.setChild('e2e_test1/testsubscribe/data/collection', {property1:'post_property1',property2:'post_property2'}, function(e, results){
-
-					if (!e){
-						//the child method returns a child in the collection with a specified id
-						publisherclient.getChild('e2e_test1/testsubscribe/data/collection', results.payload._id, function(e, results){
-							callback(e);
-						});
-
-					}else
-						callback(e);
-
-				});
-					
-
-		}catch(e){
-			callback(e);
-		}
-	});
+	
 
 	it('the publisher should push a sibling and get all siblings', function(callback) {
 		
@@ -236,10 +274,11 @@ describe('e2e test', function() {
 
 					if (!e){
 						//the child method returns a child in the collection with a specified id
-						publisherclient.get('e2e_test1/siblings*', null, function(e, results){
+						publisherclient.get('e2e_test1/siblings*', null, function(e, getresults){
 							console.log('siblings set');
-							console.log(results);
-							expect(results.payload.length > 0).to.be(true);
+							console.log(getresults);
+							expect(getresults.status == 'ok').to.be(true);
+							expect(getresults.payload.length > 0).to.be(true);
 							callback(e);
 						});
 
@@ -253,6 +292,7 @@ describe('e2e test', function() {
 			callback(e);
 		}
 	});
+
 
 
 //	We set the listener client to listen for a PUT event according to a path, then we set a value with the publisher client.
@@ -415,7 +455,7 @@ describe('e2e test', function() {
 		}
 	});
 
-	
+
 
 	it('should get using a wildcard', function(callback) {
 
@@ -435,6 +475,8 @@ describe('e2e test', function() {
 		});
 
 	});
+
+
 
 	it('should search for a complex object', function(callback) {
 
@@ -505,8 +547,8 @@ describe('e2e test', function() {
 				//console.log('IN COMPLEX SEARCH');
 				publisherclient.search('/e2e_test1/testsubscribe/data/complex*', parameters1, function(e, search_result){
 
-					//console.log('here is the search_result');
-					//console.log(search_result.payload);
+					console.log('here is the search_result');
+					console.log(search_result);
 					//console.log(search_result.payload[0].data);
 
 					expect(search_result.payload.length > 0).to.be(true);
@@ -618,8 +660,8 @@ describe('e2e test', function() {
 					console.log('merge result!!!');
 					console.log(result);
 
-					expect(result.payload.data.property1).to.be('property1');
-					expect(result.payload.data.property4).to.be('property4');
+					expect(result.payload[0].snapshot.data.property1).to.be('property1');
+					expect(result.payload[0].snapshot.data.property4).to.be('property4');
 
 					publisherclient.get('e2e_test1/test/tag/tags/*', null, function(e, results){
 
@@ -690,6 +732,7 @@ describe('e2e test', function() {
 				callback(e);
 		});
 
-	});		
+	});	
+	
 
 });
