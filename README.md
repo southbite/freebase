@@ -52,6 +52,10 @@ If you want to run in cluster mode, you need to install [Redis](http://redis.io/
 
 If you want to run in cluster or single process mode, you need to install [Mongo](http://docs.mongodb.org/manual/installation/) and have it up and running on its standard port: 27017
 
+You can just clone this repository, then run "npm install" and then run "mocha test/e2e_test" to see how things work, there are 17 unit tests there that execute against freebase service running in embedded mode, they should all pass... 
+
+But if you want to run your own service do the following:
+
 Create a directory you want to run your freebase in, create a node application in it - with some kind of main.js and a package.json
 
 I havent had the time to join npm yet, so add the following dependancy to your package.json:
@@ -63,11 +67,6 @@ I havent had the time to join npm yet, so add the following dependancy to your p
 ```
 To get the latest freebase files run:
 npm install
-
-Then run 
-mocha test/e2e_test
-
-There are 17 unit tests there that execute against freebase service running in embedded mode, they should all pass.
 
 *In node_modules/freebase/test in your folder, the e2e_test.js script demonstrates the server and client interactions shown in the following code snippets*
 
