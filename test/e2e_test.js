@@ -13,7 +13,7 @@ describe('e2e test', function() {
 	var mode = "embedded";
 
 	/*
-	This test demonstrates starting up the freebase service - with 5 worker processes
+	This test demonstrates starting up the freebase service - 
 	the authentication service will use authTokenSecret to encrypt web tokens identifying
 	the logon session. The utils setting will set the system to log non priority information
 	*/
@@ -33,7 +33,7 @@ describe('e2e test', function() {
 					data:{
 						mode:'embedded'
 					},
-					utils:null
+					utils:{log_level:'info|error|warning'}
 				}}, function(e){
 					callback(e);
 				});
@@ -41,7 +41,7 @@ describe('e2e test', function() {
 				service.initialize({mode:'cluster', size:2, port:testport, services:{
 					auth:{authTokenSecret:'a256a2fd43bf441483c5177fc85fd9d3',
 					systemSecret:test_secret},
-					utils:null
+					utils:{log_level:'info|error|warning'}
 				}}, function(e){
 					callback(e);
 				});
@@ -52,7 +52,7 @@ describe('e2e test', function() {
 						systemSecret:test_secret
 					},
 					data:{},
-					utils:null
+					utils:{log_level:'info|error|warning'}
 				}}, function(e){
 					callback(e);
 				});

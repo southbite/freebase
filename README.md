@@ -20,10 +20,14 @@ Freebase has 3 modes:
 
 embedded:
 ---------
+
 This is the easiest setup, as the system uses nedb to store data internally, so you dont need mongo or redis running on your machine. You can just spin up an instance and start pushing data to it and listening for changes via the client.
+
+* NB - the search functionality works slightly differently in embedded mode, $all is not supported, and nested columns like data.firstname dont work, when you try and limit the columns returned - you'll see what I mean if you look at the tests *
 
 cluster: 
 --------
+
 You can specify how many worker processes you want the system to use, so we can scale to multicore machines.
 You need a redis instance and a mongo instance for this mode, this is because Faye uses it's redis engine to keep state across clustered instances of the Freebase worker process.
 
@@ -159,7 +163,7 @@ PUT
 ```javascript
 my_client_instance.set('e2e_test1/testsubscribe/data', //the path you want to push your data to
 	{property1:'property1',property2:'property2',property3:'property3'}, //your data
-	null, //options ie: {merge:true}
+	{merge:true}, //options - can be null
 	function(e, result){	
 		if (!e){
 			//successful
