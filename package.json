@@ -1,8 +1,9 @@
 {
   "name": "freebase",
-  "description": "Evented api as a service",
-  "version": "0.0.1",
+  "description": "Pub/sub api as a service using faye and mongo & redis or nedb, can work as cluster, single process or embedded using nedb, use in production at your own risk",
+  "version": "0.1.10",
   "main": "./lib/index",
+  "keywords": ["faye","mongo","redis","nedb"]
   "dependencies": {
     "faye": "~1.0.1",
     "faye-redis": "~0.2.0",

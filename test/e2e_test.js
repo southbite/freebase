@@ -10,6 +10,7 @@ describe('e2e test', function() {
 
 	var testport = 8000;
 	var test_secret = 'test_secret';
+	var mode = "embedded";
 
 	/*
 	This test demonstrates starting up the freebase service - with 5 worker processes
@@ -22,8 +23,6 @@ describe('e2e test', function() {
 		this.timeout(5000);
 
 		try{
-
-			var mode = "embedded";
 
 			if (mode == "embedded"){
 				service.initialize({services:{
@@ -103,21 +102,19 @@ describe('e2e test', function() {
 
 	//We are testing setting data at a specific path
 
-	it('the publisher should set data ', function(callback) {
+	it('the publisher should set new data ', function(callback) {
 		
 		this.timeout(2000);
 
 		try{
+			var test_path_end = require('shortid').generate();
 
-			publisherclient.set('e2e_test1/testsubscribe/data', {property1:'property1',property2:'property2',property3:'property3'}, null, function(e, result){
+			publisherclient.set('e2e_test1/testsubscribe/data/' + test_path_end, {property1:'property1',property2:'property2',property3:'property3'}, null, function(e, result){
 			
 				if (!e){
-					publisherclient.get('e2e_test1/testsubscribe/data', null, function(e, results){
-
-						console.log('DID GET');
-						console.log(e);
-						console.log(results);
+					publisherclient.get('e2e_test1/testsubscribe/data/' + test_path_end, null, function(e, results){
 						expect(results.payload.length == 1).to.be(true);
+						expect(results.payload[0].data.property1 == 'property1').to.be(true);
 						callback(e);
 					});
 				}else
@@ -129,20 +126,46 @@ describe('e2e test', function() {
 		}
 	});
 
+	it('the publisher should set new data then update the data', function(callback) {
+		
+		this.timeout(2000);
+
+		try{
+			var test_path_end = require('shortid').generate();
+
+			publisherclient.set('e2e_test1/testsubscribe/data/' + test_path_end, {property1:'property1',property2:'property2',property3:'property3'}, null, function(e, insertResult){
+			
+				expect(e == null).to.be(true);
+
+				publisherclient.set('e2e_test1/testsubscribe/data/' + test_path_end, {property1:'property1',property2:'property2',property3:'property3', property4:'property4'}, null, function(e, updateResult){
+
+					expect(e == null).to.be(true);
+					expect(updateResult._id == insertResult._id).to.be(true);
+					callback();
+
+				});
+
+			});
+
+		}catch(e){
+			callback(e);
+		}
+	});
+
+
 
 	it('the publisher should push to a collection and get a child', function(callback) {
 		
 		this.timeout(10000);
 
 		try{
+				var test_path_end = require('shortid').generate();
 
-				publisherclient.setChild('e2e_test1/testsubscribe/data/collection', {property1:'post_property1',property2:'post_property2'}, function(e, results){
+				publisherclient.setChild('e2e_test1/testsubscribe/data/collection/' + test_path_end, {property1:'post_property1',property2:'post_property2'}, function(e, results){
 
 					if (!e){
 						//the child method returns a child in the collection with a specified id
-						publisherclient.getChild('e2e_test1/testsubscribe/data/collection', results.payload._id, function(e, results){
-							console.log('in getchild');
-							console.log(results);
+						publisherclient.getChild('e2e_test1/testsubscribe/data/collection/' + test_path_end, results.payload._id, function(e, results){
 							expect(results.payload.length == 1).to.be(true);
 							callback(e);
 						});
@@ -164,23 +187,20 @@ describe('e2e test', function() {
 
 		try{
 
-			publisherclient.set('e2e_test1/testsubscribe/data/merge', {property1:'property1',property2:'property2',property3:'property3'}, null, function(e, result){
+			var test_path_end = require('shortid').generate();
+
+			publisherclient.set('e2e_test1/testsubscribe/data/merge/' + test_path_end, {property1:'property1',property2:'property2',property3:'property3'}, null, function(e, result){
 			
 				if (!e){
-					publisherclient.set('e2e_test1/testsubscribe/data/merge', {property4:'property4'}, {merge:true}, function(e, result){
+					publisherclient.set('e2e_test1/testsubscribe/data/merge/' + test_path_end, {property4:'property4'}, {merge:true}, function(e, result){
 
 						if (e)
 							return callback(e);
 
-						publisherclient.get('e2e_test1/testsubscribe/data/merge', null, function(e, results){
+						publisherclient.get('e2e_test1/testsubscribe/data/merge/' + test_path_end, null, function(e, results){
 
 							if (e)
 								return callback(e);
-
-							console.log('in merge test');
-							console.log(results);
-
-							console.log(results.payload[0].data);
 
 							expect(results.payload[0].data.property4).to.be('property4');
 							expect(results.payload[0].data.property1).to.be('property1');
@@ -270,23 +290,24 @@ describe('e2e test', function() {
 
 		try{
 
-				publisherclient.setSibling('e2e_test1/siblings', {property1:'sib_post_property1',property2:'sib_post_property2'}, function(e, results){
+			var test_path_end = require('shortid').generate();	
 
-					if (!e){
-						//the child method returns a child in the collection with a specified id
-						publisherclient.get('e2e_test1/siblings*', null, function(e, getresults){
-							console.log('siblings set');
-							console.log(getresults);
-							expect(getresults.status == 'ok').to.be(true);
-							expect(getresults.payload.length > 0).to.be(true);
-							callback(e);
-						});
+			publisherclient.setSibling('e2e_test1/siblings/' + test_path_end, {property1:'sib_post_property1',property2:'sib_post_property2'}, function(e, results){
 
-					}else
+				expect(e == null).to.be(true);
+
+				publisherclient.setSibling('e2e_test1/siblings/' + test_path_end, {property1:'sib_post_property1',property2:'sib_post_property2'}, function(e, results){
+
+					expect(e == null).to.be(true);
+
+					//the child method returns a child in the collection with a specified id
+					publisherclient.get('e2e_test1/siblings/' + test_path_end + '/*', null, function(e, getresults){
+						expect(e == null).to.be(true);
+						expect(getresults.payload.length == 2).to.be(true);
 						callback(e);
-
+					});
 				});
-					
+			});
 
 		}catch(e){
 			callback(e);
@@ -401,34 +422,20 @@ describe('e2e test', function() {
 					//console.log('post_result');
 					//console.log(post_result);
 
-					if (e)
-						return callback(e);
+					expect(e == null).to.be(true);
 
 					publisherclient.get('/e2e_test1/testsubscribe/data/arr_delete_me', null, function(e, results){
 
-						if (e)
-							return callback(e);
-
-						console.log('got array');
-						console.log(results);
-
+						expect(e == null).to.be(true);
 						expect(results.payload.length).to.be(1);
 
 						publisherclient.removeChild('/e2e_test1/testsubscribe/data/arr_delete_me', post_result.payload._id, function(e, delete_result){
 
-							if (e)
-							return callback(e);
-
-							console.log('delete happened');
-							console.log(delete_result);
+							expect(e == null).to.be(true);
 
 							publisherclient.get('/e2e_test1/testsubscribe/data/arr_delete_me', null, function(e, results){
 
-								console.log('get after delete happened');
-								console.log(results.payload[0].data);
-
-								if (e)
-									return callback(e);
+								expect(e == null).to.be(true);
 
 								var foundChild = false;
 								results.payload[0].data.map(function(child){
@@ -437,17 +444,11 @@ describe('e2e test', function() {
 								});
 
 								expect(foundChild).to.be(false);
-
-								callback(e);
+								callback();
 
 							});
-
-							
 						});
-
-
 					});
-
 				});
 
 		}catch(e){
@@ -459,21 +460,26 @@ describe('e2e test', function() {
 
 	it('should get using a wildcard', function(callback) {
 
-		publisherclient.get('/e2e_test1/testsubscribe/data*', null, function(e, results){
+		var test_path_end = require('shortid').generate();
 
-			expect(results.payload.length > 0).to.be(true);
+		publisherclient.set('e2e_test1/testwildcard/' + test_path_end, {property1:'property1',property2:'property2',property3:'property3'}, null, function(e, insertResult){
+			expect(e == null).to.be(true);
+			publisherclient.set('e2e_test1/testwildcard/' + test_path_end + '/1', {property1:'property1',property2:'property2',property3:'property3'}, null, function(e, insertResult){
+				expect(e == null).to.be(true);
+			
+				publisherclient.get('e2e_test1/testwildcard/' + test_path_end + '*', null, function(e, results){
+					
+					expect(results.payload.length == 2).to.be(true);
 
-			publisherclient.getPaths('/e2e_test1/testsubscribe/data*', function(e, results){
+					publisherclient.getPaths('e2e_test1/testwildcard/' + test_path_end + '*', function(e, results){
 
-				expect(results.payload.length > 0).to.be(true);
+						expect(results.payload.length == 2).to.be(true);
+						callback(e);
 
-				callback(e);
-
+					});
+				});
 			});
-
-
 		});
-
 	});
 
 
@@ -481,6 +487,8 @@ describe('e2e test', function() {
 	it('should search for a complex object', function(callback) {
 
 		//console.log('DOING COMPLEX SEARCH');
+
+		var test_path_end = require('shortid').generate();
 
 		var complex_obj = {
 			regions:['North','South','East','West'],
@@ -490,6 +498,17 @@ describe('e2e test', function() {
 			keywords:['bass','Penny Siopis'],
 			field1:'field1'
 		};
+
+		if (mode == 'embedded'){
+			complex_obj = {
+				regions:['North','South'],
+				towns:['North.Cape Town'],
+				categories:['Action','History'],
+				subcategories:['Action.angling','History.art'],
+				keywords:['bass','Penny Siopis'],
+				field1:'field1'
+			};
+		}
 
 		var parameters1 = {
 			criteria:{
@@ -503,64 +522,50 @@ describe('e2e test', function() {
 			limit:1
 		}
 
+		if (mode == 'embedded'){
+			parameters1 = {
+				criteria:{
+					$or: [ {"data.regions": { $in: ['North','South','East','West'] }}, 
+						   {"data.towns": { $in: ['North.Cape Town', 'South.East London'] }}, 
+						   {"data.categories": { $in: ["Action","History" ] }}],
+					"data.keywords": {$in: ["bass", "Penny Siopis" ]}
+				},
+				fields:{"data":1},
+				sort:{"data.field1":1},
+				limit:1
+			}
+		}
+
 		var parameters2 = {
 			criteria:null,
 			fields:null,
 			sort:{"field1":1},
-			limit:1
+			limit:2
 		}
 
-
-		var parameters3 = {
-			criteria:{
-				'data.keywords': {$all: ["bass", "Penny Siopis"]}
-			},
-			fields:null,
-			sort:{"data.field1":1},
-			limit:1
-		}
-
-		var parameters4 = {
-			criteria:{
-				'data.field1':'field1'
-			},
-			fields:null,
-			sort:{"data.field1":1},
-			limit:1
-		}
-
-		var parameters5 = {
-			criteria:{
-				'data.keywords': {$all: ["bass", "Penny Siopis","Non-existent"]}
-			},
-			fields:null,
-			sort:{"data.field1":1},
-			limit:1
-		}
-
-
-		
-
-		publisherclient.set('/e2e_test1/testsubscribe/data/complex_one', complex_obj, null, function(e, put_result){
-
-			if (!e){
-				//console.log('IN COMPLEX SEARCH');
+		publisherclient.set('/e2e_test1/testsubscribe/data/complex/' + test_path_end, complex_obj, null, function(e, put_result){
+			expect(e == null).to.be(true);
+			publisherclient.set('/e2e_test1/testsubscribe/data/complex/' + test_path_end + '/1', complex_obj, null, function(e, put_result){
+				expect(e == null).to.be(true);
 				publisherclient.search('/e2e_test1/testsubscribe/data/complex*', parameters1, function(e, search_result){
 
-					console.log('here is the search_result');
-					console.log(search_result);
-					//console.log(search_result.payload[0].data);
+					console.log('here is the search_result payload data');
+					console.log(search_result.payload[0].data);
 
-					expect(search_result.payload.length > 0).to.be(true);
+					expect(e == null).to.be(true);
+					expect(search_result.payload.length == 1).to.be(true);
 
-					for (var index in search_result.payload)
-						console.log(index);
+					publisherclient.search('/e2e_test1/testsubscribe/data/complex*', parameters2, function(e, search_result){
 
-					callback(e);
+						expect(e == null).to.be(true);
+						expect(search_result.payload.length == 2).to.be(true);
+
+						callback(e);
+					});
 
 				});
-			}else
-				callback(e);
+
+			});
 
 		});
 
@@ -625,9 +630,6 @@ describe('e2e test', function() {
 						if (found)
 							return;
 
-						console.log('tagged, comparing to ' + randomTag);
-						console.log(tagged.snapshot.tag);
-
 						if (tagged.snapshot.tag == randomTag)
 							found = true;
 
@@ -657,9 +659,6 @@ describe('e2e test', function() {
 
 				if (!e){
 
-					console.log('merge result!!!');
-					console.log(result);
-
 					expect(result.payload[0].snapshot.data.property1).to.be('property1');
 					expect(result.payload[0].snapshot.data.property4).to.be('property4');
 
@@ -668,7 +667,6 @@ describe('e2e test', function() {
 						expect(e).to.be(null);
 						expect(results.payload.length > 0).to.be(true);
 						
-
 						var found = false;
 
 						results.payload.map(function(tagged){
