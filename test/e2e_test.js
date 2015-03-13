@@ -113,8 +113,14 @@ describe('e2e test', function() {
 			
 				if (!e){
 					publisherclient.get('e2e_test1/testsubscribe/data/' + test_path_end, null, function(e, results){
+						console.log('new data results');
+						console.log(results);
 						expect(results.payload.length == 1).to.be(true);
 						expect(results.payload[0].data.property1 == 'property1').to.be(true);
+
+						if (mode != 'embedded')
+							expect(results.payload[0].created == results.payload[0].modified).to.be(true);
+
 						callback(e);
 					});
 				}else
