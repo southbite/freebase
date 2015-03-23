@@ -15,7 +15,6 @@
     "request": "~2.36.0",
     "connect": "~2.17.1",
     "body-parser": "~1.2.0",
-    "bcrypt": "~0.7.8",
     "browserify": "~4.1.8",
     "byline": "~4.1.1",
     "JSONStream": "~0.8.3",
