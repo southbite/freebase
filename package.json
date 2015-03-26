@@ -3,29 +3,34 @@
   "description": "Pub/sub api as a service using faye and mongo & redis or nedb, can work as cluster, single process or embedded using nedb, use in production at your own risk",
   "version": "0.1.10",
   "main": "./lib/index",
-  "keywords": ["faye","mongo","redis","nedb"],
+  "keywords": [
+    "faye",
+    "mongo",
+    "redis",
+    "nedb"
+  ],
   "dependencies": {
-    "faye": "~1.0.1",
-    "faye-redis": "~0.2.0",
-    "mongodb": "~1.4.4",
-    "async": "~0.9.0",
-    "jwt-simple": "~0.2.0",
-    "moment": "~2.6.0",
-    "shortid": "~2.0.0",
-    "request": "~2.36.0",
-    "connect": "~2.17.1",
-    "body-parser": "~1.2.0",
-    "browserify": "~4.1.8",
-    "byline": "~4.1.1",
-    "JSONStream": "~0.8.3",
-    "log4js": "~0.6.10",
-    "underscore": "~1.7.0",
-    "underscore.string": "~2.3.3",
-    "traverse": "~0.6.6",
-    "nedb": "~1.1.1"
+    "JSONStream": "^0.10.0",
+    "async": "^0.9.0",
+    "body-parser": "^1.12.2",
+    "browserify": "^9.0.3",
+    "byline": "^4.2.1",
+    "connect": "^3.3.5",
+    "faye": "^1.1.1",
+    "faye-redis": "^0.2.0",
+    "jwt-simple": "^0.2.0",
+    "log4js": "^0.6.22",
+    "moment": "^2.9.0",
+    "mongodb": "^2.0.24",
+    "nedb": "^1.1.1",
+    "request": "^2.53.0",
+    "shortid": "^2.2.1",
+    "traverse": "^0.6.6",
+    "underscore": "^1.8.2",
+    "underscore.string": "^3.0.3"
   },
   "devDependencies": {
-    "mocha": "~1.12.0",
-    "expect.js": "~0.2.0"
+    "mocha": "*",
+    "expect.js": "*"
   }
 }

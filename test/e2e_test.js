@@ -10,7 +10,8 @@ describe('e2e test', function() {
 
 	var testport = 8000;
 	var test_secret = 'test_secret';
-	var mode = "embedded";
+	var mode = "cluster";
+	var default_timeout = 10000;
 
 	/*
 	This test demonstrates starting up the freebase service - 
@@ -20,48 +21,90 @@ describe('e2e test', function() {
 
 	it('should initialize the service', function(callback) {
 		
-		this.timeout(5000);
+		this.timeout(20000);
 
 		try{
 
 			if (mode == "embedded"){
-				service.initialize({services:{
-					auth:{
-						authTokenSecret:'a256a2fd43bf441483c5177fc85fd9d3',
-						systemSecret:test_secret
+				service.initialize({
+					mode:'embedded', 
+					services:{
+						auth:{
+							config:{
+								authTokenSecret:'a256a2fd43bf441483c5177fc85fd9d3',
+								systemSecret:test_secret
+							}
+						},
+						data:{
+							path:'./services/data_embedded',
+							config:{
+
+							}
+						}
 					},
-					data:{
-						mode:'embedded'
-					},
-					utils:{log_level:'info|error|warning'}
-				}}, function(e){
+					utils:{
+						log_level:'info|error|warning',
+						log_component:'prepare'
+					}
+				}, 
+				function(e){
 					callback(e);
 				});
 			}else if (mode == "cluster"){
-				service.initialize({mode:'cluster', size:2, port:testport, services:{
-					auth:{authTokenSecret:'a256a2fd43bf441483c5177fc85fd9d3',
-					systemSecret:test_secret},
-					utils:{log_level:'info|error|warning'}
-				}}, function(e){
+				service.initialize({
+					mode:'cluster', 
+					size:2,
+					port:testport,
+					services:{
+						auth:{
+							config:{
+								authTokenSecret:'a256a2fd43bf441483c5177fc85fd9d3',
+								systemSecret:test_secret
+							}
+						},
+						data:{
+							config:{
+
+							}
+						}
+					},
+					utils:{
+						log_level:'info|error|warning|trace'
+					}
+				}, 
+				function(e){
 					callback(e);
 				});
 			}else {
-				service.initialize({port:testport, services:{
-					auth:{
-						authTokenSecret:'a256a2fd43bf441483c5177fc85fd9d3',
-						systemSecret:test_secret
+				service.initialize({
+					port:testport,
+					services:{
+						auth:{
+							config:{
+								authTokenSecret:'a256a2fd43bf441483c5177fc85fd9d3',
+								systemSecret:test_secret
+							}
+						},
+						data:{
+							config:{
+
+							}
+						}
 					},
-					data:{},
-					utils:{log_level:'info|error|warning'}
-				}}, function(e){
+					utils:{
+						log_level:'info|error|warning|trace'
+					}
+				}, 
+				function(e){
 					callback(e);
 				});
 			}
-
 		}catch(e){
 			callback(e);
 		}
 	});
+
+	
 
 	var publisherclient;
 	var listenerclient;
@@ -71,9 +114,11 @@ describe('e2e test', function() {
 	database whilst another listens for changes.
 	*/
 
+
+
 	it('should initialize the clients', function(callback) {
 		
-		this.timeout(5000);
+		this.timeout(default_timeout);
 
 		try{
 
@@ -100,11 +145,136 @@ describe('e2e test', function() {
 		}
 	});
 
+	it('should merge tag some test data', function(callback) {
+
+		var randomTag = require('shortid').generate();
+
+		publisherclient.set('e2e_test1/test/tag', {property1:'property1',property2:'property2',property3:'property3'}, null, function(e, result){
+
+			//console.log([e, result]);
+
+			if (!e){
+
+			publisherclient.set('e2e_test1/test/tag', {property4:'property4'}, {tag:randomTag, merge:true}, function(e, result){
+
+				if (!e){
+
+					//console.log('merge tag results');
+					//console.log(e);
+					//console.log(result);
+
+					expect(result.payload[0].snapshot.data.property1).to.be('property1');
+					expect(result.payload[0].snapshot.data.property4).to.be('property4');
+
+					publisherclient.get('e2e_test1/test/tag/tags/*', null, function(e, results){
+
+						expect(e).to.be(null);
+						expect(results.payload.length > 0).to.be(true);
+						
+						var found = false;
+
+						results.payload.map(function(tagged){
+
+							if (found)
+								return;
+
+							if (tagged.snapshot.tag == randomTag){
+								expect(tagged.snapshot.data.property1).to.be('property1');
+								expect(tagged.snapshot.data.property4).to.be('property4');
+								found = true;
+							}
+			
+						});
+
+						if (!found)
+							callback('couldn\'t find the tag snapshot');
+						else
+							callback();
+
+					});
+				}else
+					callback(e);
+
+			});
+
+		}
+		else
+			callback(e);
+
+			
+		});
+
+	});
+
+
+	it('the listener should pick up a single delete event', function(callback) {
+		
+		this.timeout(default_timeout);
+
+		try{
+
+				//We put the data we want to delete into the database
+				publisherclient.set('/e2e_test1/testsubscribe/data/delete_me', {property1:'property1',property2:'property2',property3:'property3'}, null, function(e, result){
+
+					
+
+					//We listen for the DELETE event
+					listenerclient.on('/e2e_test1/testsubscribe/data/delete_me', 'DELETE', 1, function(e, message){
+
+						//////console.log('delete message');
+						//////console.log(message);
+
+						//we are looking at the event internals on the listener to ensure our event management is working - because we are only listening for 1
+						//instance of this event - the event listener should have been removed 
+						expect(listenerclient.events['/DELETE@/e2e_test1/testsubscribe/data/delete_me'].length).to.be(0);
+
+						//we needed to have removed a single item
+						expect(message.removed).to.be(1);
+
+						////////console.log(message);
+
+						callback(e);
+
+					}, function(e){
+
+						////////console.log('ON HAS HAPPENED: ' + e);
+
+						if (!e){
+
+							expect(listenerclient.events['/DELETE@/e2e_test1/testsubscribe/data/delete_me'].length).to.be(1);
+
+							////console.log('subscribed, about to delete');
+
+							//We perform the actual delete
+							publisherclient.remove('/e2e_test1/testsubscribe/data/delete_me', null, function(e, result){
+
+								
+									////console.log('REMOVE HAPPENED!!!');
+									////console.log(e);
+									////console.log(result);
+								
+
+								////////console.log('put happened - listening for result');
+							});
+						}else
+							callback(e);
+					});
+				});
+
+			
+
+		}catch(e){
+			callback(e);
+		}
+	});
+
+
+
 	//We are testing setting data at a specific path
 
 	it('the publisher should set new data ', function(callback) {
 		
-		this.timeout(2000);
+		this.timeout(default_timeout);
 
 		try{
 			var test_path_end = require('shortid').generate();
@@ -113,8 +283,8 @@ describe('e2e test', function() {
 			
 				if (!e){
 					publisherclient.get('e2e_test1/testsubscribe/data/' + test_path_end, null, function(e, results){
-						console.log('new data results');
-						console.log(results);
+						////console.log('new data results');
+						////console.log(results);
 						expect(results.payload.length == 1).to.be(true);
 						expect(results.payload[0].data.property1 == 'property1').to.be(true);
 
@@ -132,9 +302,11 @@ describe('e2e test', function() {
 		}
 	});
 
+
+
 	it('the publisher should set new data then update the data', function(callback) {
 		
-		this.timeout(2000);
+		this.timeout(default_timeout);
 
 		try{
 			var test_path_end = require('shortid').generate();
@@ -162,7 +334,7 @@ describe('e2e test', function() {
 
 	it('the publisher should push to a collection and get a child', function(callback) {
 		
-		this.timeout(10000);
+		this.timeout(default_timeout);
 
 		try{
 				var test_path_end = require('shortid').generate();
@@ -187,9 +359,11 @@ describe('e2e test', function() {
 		}
 	});
 
+
+
 	it('should set data, and then merge a new document into the data without overwriting old fields', function(callback) {
 		
-		this.timeout(2000);
+		this.timeout(default_timeout);
 
 		try{
 
@@ -225,13 +399,13 @@ describe('e2e test', function() {
 		}
 	});
 
-	
+
 
 	it('should subscribe to the catch all notification', function(callback) {
 
 		var caught = {};
 
-		this.timeout(10000);
+		this.timeout(default_timeout);
 		
 		listenerclient.onAll(function(e, message){
 
@@ -252,19 +426,23 @@ describe('e2e test', function() {
 
 				publisherclient.set('/e2e_test1/testsubscribe/data/catch_all', {property1:'property1',property2:'property2',property3:'property3'}, null, function(e, put_result){
 
-					//console.log(put_result);
+					////console.log('put_result');
+					////console.log(put_result);
 
 					publisherclient.setChild('/e2e_test1/testsubscribe/data/catch_all_array', {property1:'property1',property2:'property2',property3:'property3'}, function(e, post_result){
 
-						//console.log(post_result);
+						////console.log('post_result');
+						////console.log(post_result);
 
 						publisherclient.remove('/e2e_test1/testsubscribe/data/catch_all', null, function(e, del_result){
 
-							//console.log(del_result);
+							////console.log('del_result');
+							////console.log(del_result);
 
 							publisherclient.removeChild('/e2e_test1/testsubscribe/data/catch_all_array', post_result.payload._id, function(e, del_ar_result){
 
-								//console.log(del_ar_result);
+								////console.log('del_ar_result');
+								////console.log(del_ar_result);
 						
 							});
 					
@@ -292,7 +470,7 @@ describe('e2e test', function() {
 
 	it('the publisher should push a sibling and get all siblings', function(callback) {
 		
-		this.timeout(10000);
+		this.timeout(default_timeout);
 
 		try{
 
@@ -326,7 +504,7 @@ describe('e2e test', function() {
 
 	it('the listener should pick up a single published event', function(callback) {
 		
-		this.timeout(10000);
+		this.timeout(default_timeout);
 
 		try{
 
@@ -338,17 +516,17 @@ describe('e2e test', function() {
 
 			}, function(e){
 
-				////console.log('ON HAS HAPPENED: ' + e);
+				////////console.log('ON HAS HAPPENED: ' + e);
 
 				if (!e){
 
 					expect(listenerclient.events['/PUT@/e2e_test1/testsubscribe/data/event'].length).to.be(1);
 
-					////console.log('on subscribed, about to publish');
+					////////console.log('on subscribed, about to publish');
 
 					//then make the change
 					publisherclient.set('/e2e_test1/testsubscribe/data/event', {property1:'property1',property2:'property2',property3:'property3'}, null, function(e, result){
-						////console.log('put happened - listening for result');
+						////////console.log('put happened - listening for result');
 					});
 				}else
 					callback(e);
@@ -363,70 +541,18 @@ describe('e2e test', function() {
 
 //	We are testing the deletion of data at a set path, and listening for the DELETE event at that path.
 
-	it('the listener should pick up a single delete event', function(callback) {
-		
-		this.timeout(10000);
-
-		try{
-
-				//We put the data we want to delete into the database
-				publisherclient.set('/e2e_test1/testsubscribe/data/delete_me', {property1:'property1',property2:'property2',property3:'property3'}, null, function(e, result){
-
-					//We listen for the DELETE event
-					listenerclient.on('/e2e_test1/testsubscribe/data/delete_me', 'DELETE', 1, function(e, message){
-
-						//console.log('delete message');
-						//console.log(message);
-
-						//we are looking at the event internals on the listener to ensure our event management is working - because we are only listening for 1
-						//instance of this event - the event listener should have been removed 
-						expect(listenerclient.events['/DELETE@/e2e_test1/testsubscribe/data/delete_me'].length).to.be(0);
-
-						//we needed to have removed a single item
-						expect(message.removed).to.be(1);
-
-						////console.log(message);
-
-						callback(e);
-
-					}, function(e){
-
-						////console.log('ON HAS HAPPENED: ' + e);
-
-						if (!e){
-
-							expect(listenerclient.events['/DELETE@/e2e_test1/testsubscribe/data/delete_me'].length).to.be(1);
-
-							////console.log('subscribed, about to delete');
-
-							//We perform the actual delete
-							publisherclient.remove('/e2e_test1/testsubscribe/data/delete_me', null, function(e, result){
-								////console.log('put happened - listening for result');
-							});
-						}else
-							callback(e);
-					});
-				});
-
-			
-
-		}catch(e){
-			callback(e);
-		}
-	});
-
 
 
 	it('should delete a child from an array', function(callback) {
 		
-		this.timeout(10000);
+		this.timeout(default_timeout);
 
 		try{
 
 				publisherclient.setChild('/e2e_test1/testsubscribe/data/arr_delete_me', {property1:'property1',property2:'property2',property3:'property3'}, function(e, post_result){
 
-					//console.log('post_result');
-					//console.log(post_result);
+					//////console.log('post_result');
+					//////console.log(post_result);
 
 					expect(e == null).to.be(true);
 
@@ -492,7 +618,7 @@ describe('e2e test', function() {
 
 	it('should search for a complex object', function(callback) {
 
-		//console.log('DOING COMPLEX SEARCH');
+		//////console.log('DOING COMPLEX SEARCH');
 
 		var test_path_end = require('shortid').generate();
 
@@ -555,8 +681,8 @@ describe('e2e test', function() {
 				expect(e == null).to.be(true);
 				publisherclient.search('/e2e_test1/testsubscribe/data/complex*', parameters1, function(e, search_result){
 
-					console.log('here is the search_result payload data');
-					console.log(search_result.payload[0].data);
+					////console.log('here is the search_result payload data');
+					////console.log(search_result.payload[0].data);
 
 					expect(e == null).to.be(true);
 					expect(search_result.payload.length == 1).to.be(true);
@@ -577,11 +703,12 @@ describe('e2e test', function() {
 
 	});
 
+
 	it('should fail to subscribe to an event', function(callback) {
 
-		this.timeout(10000);
+		this.timeout(default_timeout);
 
-		console.log('bad subscribe');
+		////console.log('bad subscribe');
 		var faye = require('faye');
 
 		var outgoing_extension = {
@@ -613,7 +740,7 @@ describe('e2e test', function() {
 			else
 				callback();
 
-		}, 3000);
+		}, 2000);
 
 	});
 
@@ -653,60 +780,7 @@ describe('e2e test', function() {
 
 	});	
 
-	it('should merge tag some test data', function(callback) {
-
-		var randomTag = require('shortid').generate();
-
-		publisherclient.set('e2e_test1/test/tag', {property1:'property1',property2:'property2',property3:'property3'}, null, function(e, result){
-
-			if (!e){
-
-			publisherclient.set('e2e_test1/test/tag', {property4:'property4'}, {tag:randomTag, merge:true}, function(e, result){
-
-				if (!e){
-
-					expect(result.payload[0].snapshot.data.property1).to.be('property1');
-					expect(result.payload[0].snapshot.data.property4).to.be('property4');
-
-					publisherclient.get('e2e_test1/test/tag/tags/*', null, function(e, results){
-
-						expect(e).to.be(null);
-						expect(results.payload.length > 0).to.be(true);
-						
-						var found = false;
-
-						results.payload.map(function(tagged){
-
-							if (found)
-								return;
-
-							if (tagged.snapshot.tag == randomTag){
-								expect(tagged.snapshot.data.property1).to.be('property1');
-								expect(tagged.snapshot.data.property4).to.be('property4');
-								found = true;
-							}
-			
-						});
-
-						if (!found)
-							callback('couldn\'t find the tag snapshot');
-						else
-							callback();
-
-					});
-				}else
-					callback(e);
-
-			});
-
-		}
-		else
-			callback(e);
-
-			
-		});
-
-	});
+	
 
 	it('should save by id, then search and get by id, using bsonid property', function(callback) {
 
@@ -716,7 +790,7 @@ describe('e2e test', function() {
 
 			if (!e){
 
-				console.log(setresult);
+				////console.log(setresult);
 
 				var searchcriteria = {
 					criteria:{
@@ -727,7 +801,7 @@ describe('e2e test', function() {
 				publisherclient.search('e2e_test1/test/bsinid/*' , searchcriteria, function(e, results){
 
 					expect(e).to.be(null);
-					console.log(results);
+					////console.log(results);
 					expect(results.payload.length == 1).to.be(true);
 					callback();
 
@@ -737,6 +811,5 @@ describe('e2e test', function() {
 		});
 
 	});	
-	
 
 });
