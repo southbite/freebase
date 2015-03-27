@@ -10,7 +10,7 @@ describe('e2e test', function() {
 
 	var testport = 8000;
 	var test_secret = 'test_secret';
-	var mode = "embedded";
+	var mode = "cluster";
 	var default_timeout = 10000;
 
 	/*
